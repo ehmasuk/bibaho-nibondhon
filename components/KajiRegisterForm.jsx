@@ -4,12 +4,86 @@ import { loginAction } from "@/actions/authActions";
 import usePost from "@/hooks/usePost";
 import { Form, message, Select } from "antd";
 import FormItem from "antd/es/form/FormItem";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const { Option } = Select;
 
+const BD_API_BASE = "https://bdapis.com/api/v1.2";
+
 export default function KajiRegisterForm() {
     const { postData, loading } = usePost();
+    const [form] = Form.useForm();
+    
+    // State for location data
+    const [divisions, setDivisions] = useState([]);
+    const [districts, setDistricts] = useState([]);
+    const [upazillas, setUpazillas] = useState([]);
+
+    // Loading states for fetch
+    const [fetchingDivisions, setFetchingDivisions] = useState(false);
+    const [fetchingDistricts, setFetchingDistricts] = useState(false);
+    const [fetchingUpazillas, setFetchingUpazillas] = useState(false);
+
+    // Fetch divisions on mount
+    useEffect(() => {
+        const fetchDivisions = async () => {
+            setFetchingDivisions(true);
+            try {
+                const res = await axios.get(`${BD_API_BASE}/divisions`);
+                setDivisions(res.data.data);
+            } catch (err) {
+                console.error("Error fetching divisions:", err);
+                message.error("বিভাগ লোড করা সম্ভব হয়নি");
+            } finally {
+                setFetchingDivisions(false);
+            }
+        };
+        fetchDivisions();
+    }, []);
+
+    // Handle Division Change
+    const handleDivisionChange = async (divisionName) => {
+        // Reset dependent fields
+        form.setFieldsValue({ district: undefined, upazila: undefined });
+        setDistricts([]);
+        setUpazillas([]);
+
+        if (!divisionName) return;
+
+        setFetchingDistricts(true);
+        try {
+            const res = await axios.get(`${BD_API_BASE}/division/${divisionName.toLowerCase()}`);
+            setDistricts(res.data.data);
+        } catch (err) {
+            console.error("Error fetching districts:", err);
+            message.error("জেলা লোড করা সম্ভব হয়নি");
+        } finally {
+            setFetchingDistricts(false);
+        }
+    };
+
+    // Handle District Change
+    const handleDistrictChange = async (districtName) => {
+        // Reset dependent fields
+        form.setFieldsValue({ upazila: undefined });
+        setUpazillas([]);
+
+        if (!districtName) return;
+
+        setFetchingUpazillas(true);
+        try {
+            const res = await axios.get(`${BD_API_BASE}/district/${districtName.toLowerCase()}`);
+            const fetchedUpazillas = res.data.data[0]?.upazillas || [];
+            setUpazillas(fetchedUpazillas);
+        } catch (err) {
+            console.error("Error fetching upazillas:", err);
+            message.error("উপজেলা লোড করা সম্ভব হয়নি");
+        } finally {
+            setFetchingUpazillas(false);
+        }
+    };
 
     const handleSubmit = (values) => {
         postData(
@@ -28,7 +102,7 @@ export default function KajiRegisterForm() {
     };
 
     return (
-        <Form onFinish={handleSubmit} layout="vertical">
+        <Form form={form} onFinish={handleSubmit} layout="vertical">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-black">
                 {/* Full Name */}
                 <div className="md:col-span-2">
@@ -150,15 +224,18 @@ export default function KajiRegisterForm() {
                         name="division" 
                         rules={[{ required: true, message: "বিভাগ নির্বাচন করুন" }]}
                     >
-                        <Select placeholder="বিভাগ নির্বাচন করুন" size="large" className="w-full">
-                            <Option value="Dhaka">ঢাকা</Option>
-                            <Option value="Chattogram">চট্টগ্রাম</Option>
-                            <Option value="Rajshahi">রাজশাহী</Option>
-                            <Option value="Khulna">খুলনা</Option>
-                            <Option value="Barishal">বরিশাল</Option>
-                            <Option value="Sylhet">সিলেট</Option>
-                            <Option value="Rangpur">রংপুর</Option>
-                            <Option value="Mymensingh">ময়মনসিংহ</Option>
+                        <Select 
+                            placeholder="বিভাগ নির্বাচন করুন" 
+                            size="large" 
+                            className="w-full"
+                            onChange={handleDivisionChange}
+                            loading={fetchingDivisions}
+                        >
+                            {divisions.map((div) => (
+                                <Option key={div.division} value={div.division}>
+                                    {div.divisionbn}
+                                </Option>
+                            ))}
                         </Select>
                     </FormItem>
                 </div>
@@ -172,10 +249,19 @@ export default function KajiRegisterForm() {
                         name="district" 
                         rules={[{ required: true, message: "জেলা নির্বাচন করুন" }]}
                     >
-                        <Select placeholder="জেলা নির্বাচন করুন" size="large" className="w-full">
-                            <Option value="Dhaka">ঢাকা</Option>
-                            <Option value="Gazipur">গাজীপুর</Option>
-                            <Option value="Narayanganj">নারায়ণগঞ্জ</Option>
+                        <Select 
+                            placeholder="জেলা নির্বাচন করুন" 
+                            size="large" 
+                            className="w-full"
+                            onChange={handleDistrictChange}
+                            loading={fetchingDistricts}
+                            disabled={!districts.length}
+                        >
+                            {districts.map((dist) => (
+                                <Option key={dist.district} value={dist.district}>
+                                    {dist.districtbn}
+                                </Option>
+                            ))}
                         </Select>
                     </FormItem>
                 </div>
@@ -189,29 +275,22 @@ export default function KajiRegisterForm() {
                         name="upazila" 
                         rules={[{ required: true, message: "উপজেলা নির্বাচন করুন" }]}
                     >
-                        <Select placeholder="উপজেলা নির্বাচন করুন" size="large" className="w-full">
-                            <Option value="Savar">সাভার</Option>
-                            <Option value="Dhamrai">ধামরাই</Option>
-                            <Option value="Uttara">উত্তরা</Option>
+                        <Select 
+                            placeholder="উপজেলা নির্বাচন করুন" 
+                            size="large" 
+                            className="w-full"
+                            loading={fetchingUpazillas}
+                            disabled={!upazillas.length}
+                        >
+                            {upazillas.map((up) => (
+                                <Option key={up} value={up}>
+                                    {up}
+                                </Option>
+                            ))}
                         </Select>
                     </FormItem>
                 </div>
 
-                {/* Union */}
-                <div>
-                    <label htmlFor="union" className="mb-2 text-base font-medium inline-block">
-                        ইউনিয়ন
-                    </label>
-                    <FormItem 
-                        name="union" 
-                        rules={[{ required: true, message: "ইউনিয়ন নির্বাচন করুন" }]}
-                    >
-                        <Select placeholder="ইউনিয়ন নির্বাচন করুন" size="large" className="w-full">
-                            <Option value="Union 1">ইউনিয়ন ১</Option>
-                            <Option value="Union 2">ইউনিয়ন ২</Option>
-                        </Select>
-                    </FormItem>
-                </div>
 
                 {/* Address Line */}
                 <div className="md:col-span-2">

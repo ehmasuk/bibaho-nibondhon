@@ -144,7 +144,6 @@ export default function AdminKajiTable({ kajis }) {
                         <Descriptions.Item label="বিভাগ">{selectedKaji.division}</Descriptions.Item>
                         <Descriptions.Item label="জেলা">{selectedKaji.district}</Descriptions.Item>
                         <Descriptions.Item label="উপজেলা">{selectedKaji.upazila}</Descriptions.Item>
-                        <Descriptions.Item label="ইউনিয়ন">{selectedKaji.union}</Descriptions.Item>
                         <Descriptions.Item label="বিস্তারিত ঠিকানা" span={2}>{selectedKaji.addressLine}</Descriptions.Item>
                         <Descriptions.Item label="অ্যাকাউন্ট স্ট্যাটাস">
                             <Tag color={selectedKaji.status === "ACTIVE" ? "green" : selectedKaji.status === "REJECTED" ? "red" : "orange"}>

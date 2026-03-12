@@ -38,7 +38,7 @@ export default function KajiCard({ kaji }) {
                         <div className="text-sm">
                             <p>{kaji.addressLine}</p>
                             <p className="text-gray-400 text-xs mt-0.5">
-                                {kaji.union}, {kaji.upazila}, {kaji.district}, {kaji.division}
+                                {kaji.upazila}, {kaji.district}, {kaji.division}
                             </p>
                         </div>
                     </div>

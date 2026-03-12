@@ -47,7 +47,6 @@ model Kaji {
   division    String?
   district    String?
   upazila     String?
-  union       String?
   addressLine String?
 
   status KajiStatus @default(PENDING)

@@ -15,11 +15,10 @@ export async function POST(req) {
             division, 
             district, 
             upazila, 
-            union, 
             addressLine 
         } = await req.json();
 
-        if (!fullName || !email || !password || !nid || !phone || !licenseNumber || !organizationName || !division || !district || !upazila || !union || !addressLine) {
+        if (!fullName || !email || !password || !nid || !phone || !licenseNumber || !organizationName || !division || !district || !upazila || !addressLine) {
             return NextResponse.json({ message: "সবগুলো ঘর পূরণ করা আবশ্যক" }, { status: 400 });
         }
 
@@ -52,7 +51,6 @@ export async function POST(req) {
                 division,
                 district,
                 upazila,
-                union,
                 addressLine,
                 status: "PENDING"
             }

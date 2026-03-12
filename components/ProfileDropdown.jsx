@@ -14,7 +14,7 @@ function ProfileDropdown({ session }) {
   return (
     <div
       className="
-        absolute invisible opacity-0 group-hover:opacity-100 group-hover:visible overflow-hidden right-0 top-full bg-white shadow-lg z-10 duration-500 ease-in-out w-[280px] rounded-md"
+        absolute invisible opacity-0 group-hover:opacity-100 group-hover:visible overflow-hidden right-0 top-full bg-white shadow-lg z-10 duration-500 ease-in-out w-[200px] rounded-md"
     >
       <ul>
         <li>

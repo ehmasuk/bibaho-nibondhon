@@ -30,7 +30,6 @@ export async function getActiveKajis() {
                 division: true,
                 district: true,
                 upazila: true,
-                union: true,
                 addressLine: true
             }
         });
