@@ -16,3 +16,27 @@ export async function updateKajiStatus(kajiId, status) {
         return { success: false, message: "Failed to update status" };
     }
 }
+
+export async function getActiveKajis() {
+    try {
+        const kajis = await prisma.kaji.findMany({
+            where: { status: 'ACTIVE' },
+            select: {
+                id: true,
+                fullName: true,
+                licenseNumber: true,
+                organizationName: true,
+                phone: true,
+                division: true,
+                district: true,
+                upazila: true,
+                union: true,
+                addressLine: true
+            }
+        });
+        return { success: true, data: kajis };
+    } catch (error) {
+        console.error("Get Active Kajis Error:", error);
+        return { success: false, message: "Failed to fetch active Kajis" };
+    }
+}

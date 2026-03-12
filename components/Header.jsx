@@ -4,31 +4,33 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { AiOutlineUser } from "react-icons/ai";
 import Logo from "./Logo";
-import ProfileDropdown from "./ProfileDropdown";
 import NavDropdown from "./NavDropdown";
+import ProfileDropdown from "./ProfileDropdown";
 
 function Header() {
   const { data: session, status } = useSession();
 
   const loginItems = [
-    { label: "Login as User", href: "/user/login" },
-    { label: "Login as Kaji", href: "/kaji/login" },
+    { label: "ব্যবহারকারী লগইন", href: "/user/login" },
+    { label: "কাজী লগইন", href: "/kaji/login" },
   ];
 
   const registerItems = [
-    { label: "Register as User", href: "/user/register" },
-    { label: "Register as Kaji", href: "/kaji/register" },
+    { label: "ব্যবহারকারী নিবন্ধন", href: "/user/register" },
+    { label: "কাজী নিবন্ধন", href: "/kaji/register" },
   ];
 
   return (
     <nav className="shadow bg-white sticky top-0 z-50">
-      <div className="flex items-center justify-between max-w-screen-xl mx-auto px-4 py-4">
+      <div className="flex items-center justify-between max-w-screen-xl mx-auto px-4 py-3">
         <div>
           <Logo />
         </div>
-        <div className="flex-1 max-w-md mx-8"></div>
         <div>
           <div className="flex items-center gap-8">
+            <Link href="/kajis" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+              কাজীদের তথ্যের তালিকা
+            </Link>
             {status == "authenticated" ? (
               <div className="relative group">
                 <Link href="/">
@@ -38,8 +40,8 @@ function Header() {
               </div>
             ) : (
               <div className="flex items-center gap-6">
-                <NavDropdown title="Login" items={loginItems} />
-                <NavDropdown title="Register" items={registerItems} />
+                <NavDropdown title="লগইন করুন" items={loginItems} />
+                <NavDropdown title="নিবন্ধন করুন" items={registerItems} />
               </div>
             )}
           </div>

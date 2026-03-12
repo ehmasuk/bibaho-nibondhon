@@ -1,15 +1,50 @@
 "use client";
 
-import { Button, Checkbox, DatePicker, Form, Input, message } from "antd";
+import { Button, Checkbox, DatePicker, Form, Input, message, Select } from "antd";
 import Link from "next/link";
 import { FaBalanceScale, FaCalendarAlt, FaInfoCircle, FaMapMarkerAlt, FaUserAlt, FaUsers } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { getActiveKajis } from "@/actions/kajiActions";
+import { submitDivorceApplication } from "@/actions/divorceActions";
+import { useRouter } from "next/navigation";
 
 export default function DivorceApplicationPage() {
   const [form] = Form.useForm();
+  const [kajis, setKajis] = useState([]);
+  const [loadingKajis, setLoadingKajis] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const router = useRouter();
 
-  const onFinish = (values) => {
-    console.log("Success:", values);
-    message.success("তালাকনামা আবেদন সফলভাবে জমা দেওয়া হয়েছে! (স্থায়ী ডেমো)");
+  useEffect(() => {
+    const fetchKajis = async () => {
+      setLoadingKajis(true);
+      const result = await getActiveKajis();
+      if (result.success) {
+        setKajis(result.data);
+      } else {
+        message.error(result.message || "কাজী তথ্য আনতে ব্যর্থ হয়েছে");
+      }
+      setLoadingKajis(false);
+    };
+    fetchKajis();
+  }, []);
+
+  const onFinish = async (values) => {
+    setSubmitting(true);
+    try {
+      const result = await submitDivorceApplication(values);
+      if (result.success) {
+        message.success(result.message);
+        router.push("/user/dashboard");
+      } else {
+        message.error(result.message);
+      }
+    } catch (error) {
+      console.error("Divorce Submission Error:", error);
+      message.error("আবেদন জমা দিতে ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -142,8 +177,19 @@ export default function DivorceApplicationPage() {
 
             {/* Kaji Selection & Declaration */}
             <section className="bg-gray-100 p-8 rounded-3xl border border-gray-200">
-              <Form.Item label="কাজী/নিকাহ রেজিস্ট্রার নির্বাচন করুন" name="kajiId" rules={[{ required: true }]}>
-                <Input placeholder="রেজিস্ট্রার আইডি বা নাম (ডেমো)" className="rounded-xl p-3 w-full" />
+              <Form.Item label="কাজী/নিকাহ রেজিস্ট্রার নির্বাচন করুন" name="kajiId" rules={[{ required: true, message: 'কাজী নির্বাচন আবশ্যক' }]}>
+                <Select
+                  placeholder="নিকাহ রেজিস্ট্রার (কাজী) নির্বাচন করুন"
+                  className="h-14"
+                  loading={loadingKajis}
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
+                  options={kajis.map((kaji) => ({
+                    value: kaji.id,
+                    label: `${kaji.fullName} (${kaji.licenseNumber})`,
+                  }))}
+                />
               </Form.Item>
 
               <Form.Item name="declarationAccepted" valuePropName="checked" rules={[{ validator: (_, value) => (value ? Promise.resolve() : Promise.reject(new Error("ঘোষণা গ্রহণ করা আবশ্যক"))) }]}>
@@ -156,9 +202,10 @@ export default function DivorceApplicationPage() {
                 type="primary"
                 htmlType="submit"
                 danger
+                loading={submitting}
                 className="w-full h-16 bg-red-800 hover:bg-red-700 rounded-2xl text-xl font-bold shadow-2xl border-none transition transform active:scale-95"
               >
-                বিচ্ছেদ আবেদন জমা দিন
+                {submitting ? "জমাদান করা হচ্ছে..." : "বিচ্ছেদ আবেদন জমা দিন"}
               </Button>
             </div>
           </Form>

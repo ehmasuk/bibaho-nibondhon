@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import prisma from "@/prisma/prisma";
 import Link from "next/link";
 import { FaFileSignature, FaUserFriends, FaHistory, FaCheckCircle, FaHourglassHalf, FaSignOutAlt, FaBalanceScale, FaHome } from "react-icons/fa";
+import UserApplicationDetails from "@/components/UserApplicationDetails";
 
 export default async function UserDashboardPage() {
     const session = await auth();
@@ -41,42 +42,13 @@ export default async function UserDashboardPage() {
             </div>
 
             <main className="max-w-screen-xl mx-auto px-4 mt-10">
-                {/* Stats Summary */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-5">
-                        <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-2xl">
-                            <FaFileSignature />
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">Active Applications</p>
-                            <p className="text-2xl font-bold text-gray-900">{activeCount}</p>
-                        </div>
-                    </div>
-                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-5">
-                        <div className="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center text-2xl">
-                            <FaCheckCircle />
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">Completed</p>
-                            <p className="text-2xl font-bold text-gray-900">0</p>
-                        </div>
-                    </div>
-                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-5">
-                        <div className="w-12 h-12 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center text-2xl">
-                            <FaHistory />
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">Drafts</p>
-                            <p className="text-2xl font-bold text-gray-900">0</p>
-                        </div>
-                    </div>
-                </div>
+
 
                 {/* Quick Actions */}
                 <div className="grid md:grid-cols-2 gap-10 mb-10">
                     <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
                         <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-                             Quick Actions
+                            Actions
                         </h2>
                         <div className="flex flex-col gap-4">
                             <Link 
@@ -102,7 +74,7 @@ export default async function UserDashboardPage() {
                     </div>
 
                     <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-                        <h2 className="text-xl font-bold mb-6">Application Status</h2>
+                        <h2 className="text-xl font-bold mb-6">Applications</h2>
                         <div className="flex flex-col items-center justify-center py-10 text-center">
                             {activeCount > 0 ? (
                                 <div className="space-y-4 w-full">
@@ -117,7 +89,7 @@ export default async function UserDashboardPage() {
                                                     <p className="text-xs text-blue-600 font-medium uppercase tracking-tighter">Status: {userData.marriageApplication.status}</p>
                                                 </div>
                                             </div>
-                                            <Link href="#" className="text-blue-600 hover:underline text-sm font-bold">View Details</Link>
+                                            <UserApplicationDetails application={userData.marriageApplication} type="marriage" />
                                         </div>
                                     )}
                                     {hasDivorceApp && (
@@ -131,7 +103,7 @@ export default async function UserDashboardPage() {
                                                     <p className="text-xs text-red-600 font-medium uppercase tracking-tighter">Status: {userData.divorceApplication.status}</p>
                                                 </div>
                                             </div>
-                                            <Link href="#" className="text-red-600 hover:underline text-sm font-bold">View Details</Link>
+                                            <UserApplicationDetails application={userData.divorceApplication} type="divorce" />
                                         </div>
                                     )}
                                 </div>

@@ -1,15 +1,51 @@
 "use client";
 
-import { Form, Input, Select, DatePicker, Button, Divider, checkbox, Checkbox, message } from "antd";
+import { Form, Input, Select, DatePicker, Button, Divider, checkbox, Checkbox, message, Spin } from "antd";
 import { FaRegFileAlt, FaMale, FaFemale, FaUsers, FaMapMarkerAlt, FaCalendarAlt, FaMoneyBillWave } from "react-icons/fa";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getActiveKajis } from "@/actions/kajiActions";
+import { submitMarriageApplication } from "@/actions/marriageActions";
+import { useRouter } from "next/navigation";
 
 export default function MarriageApplicationPage() {
     const [form] = Form.useForm();
+    const [kajis, setKajis] = useState([]);
+    const [loadingKajis, setLoadingKajis] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
+    const router = useRouter();
 
-    const onFinish = (values) => {
-        console.log("Success:", values);
-        message.success("বিবাহ নিবন্ধন আবেদন সফলভাবে জমা দেওয়া হয়েছে! (স্থায়ী ডেমো)");
+    useEffect(() => {
+        const fetchKajis = async () => {
+            setLoadingKajis(true);
+            const result = await getActiveKajis();
+            if (result.success) {
+                setKajis(result.data);
+            } else {
+                message.error(result.message || "কাজী তথ্য আনতে ব্যর্থ হয়েছে");
+            }
+            setLoadingKajis(false);
+        };
+        fetchKajis();
+    }, []);
+
+    const onFinish = async (values) => {
+        setSubmitting(true);
+        try {
+            const result = await submitMarriageApplication(values);
+            if (result.success) {
+                message.success(result.message);
+                form.resetFields();
+                router.push("/user/dashboard");
+            } else {
+                message.error(result.message);
+            }
+        } catch (error) {
+            console.error("Submission Error:", error);
+            message.error("আবেদন জমা দিতে সমস্যা হয়েছে।");
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
@@ -172,11 +208,20 @@ export default function MarriageApplicationPage() {
                         {/* Kaji Selection & Declaration */}
                         <section className="bg-gray-100 p-8 rounded-3xl border border-gray-200">
                              <Form.Item label="কাজী নির্বাচন করুন" name="kajiId" rules={[{ required: true, message: 'কাজী নির্বাচন আবশ্যক' }]}>
-                                <Select placeholder="নিকাহ রেজিস্ট্রার (কাজী) নির্বাচন করুন" className="h-14">
-                                    <Select.Option value="kaji1">কাজী মোজাম্মেল হক</Select.Option>
-                                    <Select.Option value="kaji2">মাওলানা আব্দুল কাদের</Select.Option>
-                                    <Select.Option value="kaji3">হাফিজুর রহমান</Select.Option>
-                                </Select>
+                                <Select 
+                                    placeholder="নিকাহ রেজিস্ট্রার (কাজী) নির্বাচন করুন" 
+                                    className="h-14"
+                                    loading={loadingKajis}
+                                    showSearch
+                                    optionFilterProp="children"
+                                    filterOption={(input, option) =>
+                                        (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+                                    }
+                                    options={kajis.map(kaji => ({
+                                        value: kaji.id,
+                                        label: `${kaji.fullName} (${kaji.licenseNumber})`
+                                    }))}
+                                />
                             </Form.Item>
 
                             <Form.Item 
@@ -194,9 +239,11 @@ export default function MarriageApplicationPage() {
                             <Button 
                                 type="primary" 
                                 htmlType="submit" 
+                                loading={submitting}
+                                disabled={submitting}
                                 className="w-full h-16 bg-indigo-900 hover:bg-indigo-800 rounded-2xl text-xl font-bold shadow-2xl border-none transition transform active:scale-95"
                             >
-                                আবেদন জমা দিন
+                                {submitting ? "জমাদান করা হচ্ছে..." : "আবেদন জমা দিন"}
                             </Button>
                         </div>
                     </Form>

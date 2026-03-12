@@ -14,8 +14,8 @@ const plus_jakarta_sans = Plus_Jakarta_Sans({
 });
 
 export const metadata = {
-  title: "EazyBuy",
-  description: "Buy easy and fast",
+  title: "বিবাহনিবন্ধন",
+  description: "বিবাহনিবন্ধন",
 };
 
 export default function RootLayout({ children }) {
