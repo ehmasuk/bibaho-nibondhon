@@ -13,7 +13,7 @@ export default function UserLoginPage() {
                 <LoginForm />
                 
                 <div className="mt-8 text-center text-sm text-gray-600">
-                    Don't have an account?{" "}
+                    Don&apos;t have an account?{" "}
                     <Link href="/user/register" className="font-bold text-blue-600 hover:text-blue-700 underline underline-offset-4">
                         Register here
                     </Link>

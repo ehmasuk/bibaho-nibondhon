@@ -2,7 +2,7 @@ import { logoutAction } from "@/actions/authActions";
 import { auth } from "@/auth";
 import prisma from "@/prisma/prisma";
 import Link from "next/link";
-import { FaFileSignature, FaUserFriends, FaHistory, FaCheckCircle, FaHourglassHalf, FaSignOutAlt, FaBalanceScale } from "react-icons/fa";
+import { FaFileSignature, FaUserFriends, FaHistory, FaCheckCircle, FaHourglassHalf, FaSignOutAlt, FaBalanceScale, FaHome } from "react-icons/fa";
 
 export default async function UserDashboardPage() {
     const session = await auth();
