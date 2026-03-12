@@ -1,0 +1,150 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("NEXT_PUBLIC_MONGOOSE_URL")
+}
+
+enum KajiStatus {
+  PENDING
+  ACTIVE
+  REJECTED
+}
+
+enum ApplicationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model User {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  nid      String @unique
+  password String
+
+  marriageApplication MarriageApplication?
+  divorceApplication  DivorceApplication?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Kaji {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  fullName String?
+  email    String @unique
+  password String
+
+  nid   String @unique
+  phone String?
+
+  licenseNumber    String @unique
+  organizationName String?
+
+  division    String?
+  district    String?
+  upazila     String?
+  union       String?
+  addressLine String?
+
+  status KajiStatus @default(PENDING)
+
+  marriageApplications MarriageApplication[]
+  divorceApplications  DivorceApplication[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MarriageApplication {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  userId String @unique @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+
+  kajiId String? @db.ObjectId
+  kaji   Kaji?   @relation(fields: [kajiId], references: [id])
+
+  status ApplicationStatus @default(PENDING)
+
+  // Groom Info
+  groomFullName   String
+  groomNid        String
+  groomFatherName String
+  groomMotherName String
+  groomAddress    String
+
+  // Bride Info
+  brideFullName   String
+  brideNid        String
+  brideFatherName String
+  brideMotherName String
+  brideAddress    String
+
+  // Marriage Details
+  marriageDate     DateTime
+  denmohorAmount   Int
+  marriageLocation String
+
+  // Groom Witness
+  groomWitness1Name String
+  groomWitness1Nid  String
+  groomWitness2Name String
+  groomWitness2Nid  String
+
+  // Bride Witness
+  brideWitness1Name String
+  brideWitness1Nid  String
+  brideWitness2Name String
+  brideWitness2Nid  String
+
+  declarationAccepted Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DivorceApplication {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  userId String @unique @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+
+  kajiId String? @db.ObjectId
+  kaji   Kaji?   @relation(fields: [kajiId], references: [id])
+
+  status ApplicationStatus @default(PENDING)
+
+  // Husband Info
+  husbandFullName   String
+  husbandNid        String
+  husbandFatherName String
+  husbandMotherName String
+  husbandAddress    String
+
+  // Wife Info
+  wifeFullName   String
+  wifeNid        String
+  wifeFatherName String
+  wifeMotherName String
+  wifeAddress    String
+
+  // Divorce Details
+  divorceDate     DateTime
+  divorceLocation String
+  divorceReason   String
+
+  // Witness
+  witness1Name String
+  witness1Nid  String
+  witness2Name String
+  witness2Nid  String
+
+  declarationAccepted Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
