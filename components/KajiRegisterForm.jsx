@@ -2,11 +2,13 @@
 
 import { loginAction } from "@/actions/authActions";
 import usePost from "@/hooks/usePost";
-import { Form, message, Select } from "antd";
+import { Form, message, Select, Upload, Button } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { FaCamera } from "react-icons/fa";
+import { imageToBase64 } from "@/helpers/imageToBase64";
 
 const { Option } = Select;
 
@@ -85,14 +87,19 @@ export default function KajiRegisterForm() {
         }
     };
 
-    const handleSubmit = (values) => {
+    const handleSubmit = async (values) => {
+        let imageData = null;
+        if (values.image && values.image.fileList && values.image.fileList[0]) {
+            imageData = await imageToBase64(values.image.fileList[0].originFileObj);
+        }
+
         postData(
             "/kaji/register",
-            values,
+            { ...values, image: imageData },
             async (data) => {
                 message.success(data.message);
                 // After registration, log them in automatically
-                await loginAction({ licenseNumber: values.licenseNumber, password: values.password });
+                await loginAction({ nid: values.nid, password: values.password, role: "KAJI" });
                 window.location.href = "/kaji/dashboard";
             },
             (err) => {
@@ -104,6 +111,29 @@ export default function KajiRegisterForm() {
     return (
         <Form form={form} onFinish={handleSubmit} layout="vertical">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-black">
+                {/* Photo Upload */}
+                <div className="md:col-span-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 p-6 rounded-2xl mb-4 bg-gray-50/50">
+                    <label className="mb-4 text-lg font-bold text-gray-700">আপনার ছবি আপলোড করুন</label>
+                    <FormItem 
+                        name="image" 
+                        rules={[{ required: true, message: "অনুগ্রহ করে আপনার ছবি আপলোড করুন" }]}
+                        valuePropName="file"
+                    >
+                        <Upload
+                            listType="picture-card"
+                            maxCount={1}
+                            beforeUpload={() => false}
+                            accept="image/*"
+                            className="bg-white"
+                        >
+                            <div className="flex flex-col items-center">
+                                <FaCamera className="text-2xl text-gray-400 mb-2" />
+                                <div className="text-xs text-gray-400 text-center px-2">পাসপোর্ট সাইজ ছবি (প্রস্তাবিত)</div>
+                            </div>
+                        </Upload>
+                    </FormItem>
+                </div>
+
                 {/* Full Name */}
                 <div className="md:col-span-2">
                     <label htmlFor="fullName" className="mb-2 text-base font-medium inline-block">

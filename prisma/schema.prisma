@@ -40,6 +40,7 @@ model Kaji {
 
   nid   String @unique
   phone String?
+  image String?
 
   licenseNumber    String @unique
   organizationName String?
@@ -75,6 +76,8 @@ model MarriageApplication {
   groomFatherName String
   groomMotherName String
   groomAddress    String
+  groomPhoto      String?
+  groomSignature  String?
 
   // Bride Info
   brideFullName   String
@@ -82,6 +85,8 @@ model MarriageApplication {
   brideFatherName String
   brideMotherName String
   brideAddress    String
+  bridePhoto      String?
+  brideSignature  String?
 
   // Marriage Details
   marriageDate     DateTime

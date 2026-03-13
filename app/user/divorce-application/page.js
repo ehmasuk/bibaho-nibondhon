@@ -1,19 +1,109 @@
 "use client";
 
-import { Button, Checkbox, DatePicker, Form, Input, message, Select } from "antd";
+import { Button, Checkbox, DatePicker, Form, Input, message, Select, Empty, Spin } from "antd";
 import Link from "next/link";
 import { FaBalanceScale, FaCalendarAlt, FaInfoCircle, FaMapMarkerAlt, FaUserAlt, FaUsers } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { getActiveKajis } from "@/actions/kajiActions";
 import { submitDivorceApplication } from "@/actions/divorceActions";
 import { useRouter } from "next/navigation";
+import KajiCard from "@/components/KajiCard";
+import axios from "axios";
+
+const { Option } = Select;
+const BD_API_BASE = "https://bdapis.com/api/v1.2";
 
 export default function DivorceApplicationPage() {
   const [form] = Form.useForm();
   const [kajis, setKajis] = useState([]);
   const [loadingKajis, setLoadingKajis] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  
+  // Location state
+  const [divisions, setDivisions] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [upazillas, setUpazillas] = useState([]);
+  const [fetchingDivisions, setFetchingDivisions] = useState(false);
+  const [fetchingDistricts, setFetchingDistricts] = useState(false);
+  const [fetchingUpazillas, setFetchingUpazillas] = useState(false);
+  
+  const [selectedDivision, setSelectedDivision] = useState(null);
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [selectedUpazila, setSelectedUpazila] = useState(null);
+
+  const [selectedKajiId, setSelectedKajiId] = useState(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchDivisions = async () => {
+      setFetchingDivisions(true);
+      try {
+        const res = await axios.get(`${BD_API_BASE}/divisions`);
+        setDivisions(res.data.data);
+      } catch (err) {
+        console.error("Error fetching divisions:", err);
+        message.error("বিভাগ লোড করা সম্ভব হয়নি");
+      } finally {
+        setFetchingDivisions(false);
+      }
+    };
+    fetchDivisions();
+  }, []);
+
+  const handleDivisionChange = async (value) => {
+    setSelectedDivision(value);
+    setSelectedDistrict(null);
+    setSelectedUpazila(null);
+    setDistricts([]);
+    setUpazillas([]);
+
+    if (!value) return;
+
+    setFetchingDistricts(true);
+    try {
+      const res = await axios.get(`${BD_API_BASE}/division/${value.toLowerCase()}`);
+      setDistricts(res.data.data);
+    } catch (err) {
+      console.error("Error fetching districts:", err);
+      message.error("জেলা লোড করা সম্ভব হয়নি");
+    } finally {
+      setFetchingDistricts(false);
+    }
+  };
+
+  const handleDistrictChange = async (value) => {
+    setSelectedDistrict(value);
+    setSelectedUpazila(null);
+    setUpazillas([]);
+
+    if (!value) return;
+
+    setFetchingUpazillas(true);
+    try {
+      const res = await axios.get(`${BD_API_BASE}/district/${value.toLowerCase()}`);
+      const fetchedUpazillas = res.data.data[0]?.upazillas || [];
+      setUpazillas(fetchedUpazillas);
+    } catch (err) {
+      console.error("Error fetching upazillas:", err);
+      message.error("উপজেলা লোড করা সম্ভব হয়নি");
+    } finally {
+      setFetchingUpazillas(false);
+    }
+  };
+
+  const handleKajiSelect = (id) => {
+    setSelectedKajiId(id);
+    form.setFieldsValue({ kajiId: id });
+  };
+
+  const filteredKajis = useMemo(() => {
+    if (!selectedDivision || !selectedDistrict || !selectedUpazila) return [];
+    return kajis.filter(kaji => 
+        kaji.division === selectedDivision &&
+        kaji.district === selectedDistrict &&
+        kaji.upazila === selectedUpazila
+    );
+  }, [kajis, selectedDivision, selectedDistrict, selectedUpazila]);
 
   useEffect(() => {
     const fetchKajis = async () => {
@@ -177,20 +267,84 @@ export default function DivorceApplicationPage() {
 
             {/* Kaji Selection & Declaration */}
             <section className="bg-gray-100 p-8 rounded-3xl border border-gray-200">
-              <Form.Item label="কাজী/নিকাহ রেজিস্ট্রার নির্বাচন করুন" name="kajiId" rules={[{ required: true, message: 'কাজী নির্বাচন আবশ্যক' }]}>
-                <Select
-                  placeholder="নিকাহ রেজিস্ট্রার (কাজী) নির্বাচন করুন"
-                  className="h-14"
-                  loading={loadingKajis}
-                  showSearch
-                  optionFilterProp="children"
-                  filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
-                  options={kajis.map((kaji) => ({
-                    value: kaji.id,
-                    label: `${kaji.fullName} (${kaji.licenseNumber})`,
-                  }))}
-                />
-              </Form.Item>
+              <div className="mb-8">
+                <h2 className="text-xl font-bold text-gray-900 mb-4 pb-2 border-b border-gray-300">কাজী/নিকাহ রেজিস্ট্রার নির্বাচন করুন</h2>
+                <p className="text-gray-600 mb-4 text-sm mt-2">আপনার এলাকার কাজী খুঁজে পেতে বিভাগ, জেলা এবং উপজেলা নির্বাচন করুন।</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                  <Select 
+                    placeholder="বিভাগ নির্বাচন করুন" 
+                    size="large" 
+                    className="w-full h-12"
+                    value={selectedDivision}
+                    onChange={handleDivisionChange}
+                    loading={fetchingDivisions}
+                  >
+                    {divisions.map((div) => (
+                      <Option key={div.division} value={div.division}>
+                        {div.divisionbn}
+                      </Option>
+                    ))}
+                  </Select>
+
+                  <Select 
+                    placeholder="জেলা নির্বাচন করুন" 
+                    size="large" 
+                    className="w-full h-12"
+                    value={selectedDistrict}
+                    onChange={handleDistrictChange}
+                    loading={fetchingDistricts}
+                    disabled={!districts.length}
+                  >
+                    {districts.map((dist) => (
+                      <Option key={dist.district} value={dist.district}>
+                        {dist.districtbn}
+                      </Option>
+                    ))}
+                  </Select>
+
+                  <Select 
+                    placeholder="উপজেলা নির্বাচন করুন" 
+                    size="large" 
+                    className="w-full h-12"
+                    value={selectedUpazila}
+                    onChange={(val) => setSelectedUpazila(val)}
+                    loading={fetchingUpazillas}
+                    disabled={!upazillas.length}
+                  >
+                    {upazillas.map((up) => (
+                      <Option key={up} value={up}>
+                        {up}
+                      </Option>
+                    ))}
+                  </Select>
+                </div>
+
+                <Form.Item name="kajiId" rules={[{ required: true, message: 'কাজী নির্বাচন আবশ্যক' }]} hidden>
+                  <Input />
+                </Form.Item>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[500px] overflow-y-auto px-1 py-1 custom-scrollbar">
+                  {loadingKajis ? (
+                    <div className="col-span-full py-10 flex justify-center">
+                      <Spin size="large" />
+                    </div>
+                  ) : filteredKajis.length > 0 ? (
+                    filteredKajis.map(kaji => (
+                      <KajiCard 
+                        key={kaji.id} 
+                        kaji={kaji} 
+                        isSelected={selectedKajiId === kaji.id}
+                        onClick={() => handleKajiSelect(kaji.id)}
+                      />
+                    ))
+                  ) : (
+                    <div className="col-span-full py-10 bg-white rounded-2xl border border-gray-100 flex items-center justify-center">
+                      <Empty description={(!selectedDivision || !selectedDistrict || !selectedUpazila) ? "কাজী দেখতে সম্পূর্ণ ঠিকানা নির্বাচন করুন" : "এই এলাকায় কোনো কাজী পাওয়া যায়নি"} />
+                    </div>
+                  )}
+                </div>
+              </div>
 
               <Form.Item name="declarationAccepted" valuePropName="checked" rules={[{ validator: (_, value) => (value ? Promise.resolve() : Promise.reject(new Error("ঘোষণা গ্রহণ করা আবশ্যক"))) }]}>
                 <Checkbox className="text-gray-700">আমি নিশ্চিত করছি যে বিচ্ছেদের জন্য অনুরোধকৃত তথ্য সঠিক এবং আমি এর আইনি ফলাফলের জন্য অবগত।</Checkbox>

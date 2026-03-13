@@ -1,19 +1,110 @@
 "use client";
 
-import { Form, Input, Select, DatePicker, Button, Divider, checkbox, Checkbox, message, Spin } from "antd";
-import { FaRegFileAlt, FaMale, FaFemale, FaUsers, FaMapMarkerAlt, FaCalendarAlt, FaMoneyBillWave } from "react-icons/fa";
+import { Form, Input, Select, DatePicker, Button, Divider, checkbox, Checkbox, message, Spin, Empty, Upload } from "antd";
+import { FaRegFileAlt, FaMale, FaFemale, FaUsers, FaMapMarkerAlt, FaCalendarAlt, FaMoneyBillWave, FaSearch, FaCamera, FaSignature } from "react-icons/fa";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { getActiveKajis } from "@/actions/kajiActions";
 import { submitMarriageApplication } from "@/actions/marriageActions";
+import { imageToBase64 } from "@/helpers/imageToBase64";
 import { useRouter } from "next/navigation";
+import KajiCard from "@/components/KajiCard";
+import axios from "axios";
+
+const { Option } = Select;
+const BD_API_BASE = "https://bdapis.com/api/v1.2";
 
 export default function MarriageApplicationPage() {
     const [form] = Form.useForm();
     const [kajis, setKajis] = useState([]);
     const [loadingKajis, setLoadingKajis] = useState(true);
     const [submitting, setSubmitting] = useState(false);
+    
+    // Location state
+    const [divisions, setDivisions] = useState([]);
+    const [districts, setDistricts] = useState([]);
+    const [upazillas, setUpazillas] = useState([]);
+    const [fetchingDivisions, setFetchingDivisions] = useState(false);
+    const [fetchingDistricts, setFetchingDistricts] = useState(false);
+    const [fetchingUpazillas, setFetchingUpazillas] = useState(false);
+    
+    const [selectedDivision, setSelectedDivision] = useState(null);
+    const [selectedDistrict, setSelectedDistrict] = useState(null);
+    const [selectedUpazila, setSelectedUpazila] = useState(null);
+
+    const [selectedKajiId, setSelectedKajiId] = useState(null);
     const router = useRouter();
+
+    useEffect(() => {
+        const fetchDivisions = async () => {
+            setFetchingDivisions(true);
+            try {
+                const res = await axios.get(`${BD_API_BASE}/divisions`);
+                setDivisions(res.data.data);
+            } catch (err) {
+                console.error("Error fetching divisions:", err);
+                message.error("বিভাগ লোড করা সম্ভব হয়নি");
+            } finally {
+                setFetchingDivisions(false);
+            }
+        };
+        fetchDivisions();
+    }, []);
+
+    const handleDivisionChange = async (value) => {
+        setSelectedDivision(value);
+        setSelectedDistrict(null);
+        setSelectedUpazila(null);
+        setDistricts([]);
+        setUpazillas([]);
+
+        if (!value) return;
+
+        setFetchingDistricts(true);
+        try {
+            const res = await axios.get(`${BD_API_BASE}/division/${value.toLowerCase()}`);
+            setDistricts(res.data.data);
+        } catch (err) {
+            console.error("Error fetching districts:", err);
+            message.error("জেলা লোড করা সম্ভব হয়নি");
+        } finally {
+            setFetchingDistricts(false);
+        }
+    };
+
+    const handleDistrictChange = async (value) => {
+        setSelectedDistrict(value);
+        setSelectedUpazila(null);
+        setUpazillas([]);
+
+        if (!value) return;
+
+        setFetchingUpazillas(true);
+        try {
+            const res = await axios.get(`${BD_API_BASE}/district/${value.toLowerCase()}`);
+            const fetchedUpazillas = res.data.data[0]?.upazillas || [];
+            setUpazillas(fetchedUpazillas);
+        } catch (err) {
+            console.error("Error fetching upazillas:", err);
+            message.error("উপজেলা লোড করা সম্ভব হয়নি");
+        } finally {
+            setFetchingUpazillas(false);
+        }
+    };
+
+    const handleKajiSelect = (id) => {
+        setSelectedKajiId(id);
+        form.setFieldsValue({ kajiId: id });
+    };
+
+    const filteredKajis = useMemo(() => {
+        if (!selectedDivision || !selectedDistrict || !selectedUpazila) return [];
+        return kajis.filter(kaji => 
+            kaji.division === selectedDivision &&
+            kaji.district === selectedDistrict &&
+            kaji.upazila === selectedUpazila
+        );
+    }, [kajis, selectedDivision, selectedDistrict, selectedUpazila]);
 
     useEffect(() => {
         const fetchKajis = async () => {
@@ -32,7 +123,33 @@ export default function MarriageApplicationPage() {
     const onFinish = async (values) => {
         setSubmitting(true);
         try {
-            const result = await submitMarriageApplication(values);
+            let groomPhotoData = null;
+            let groomSignatureData = null;
+            let bridePhotoData = null;
+            let brideSignatureData = null;
+
+            if (values.groomPhoto && values.groomPhoto.fileList && values.groomPhoto.fileList[0]) {
+                groomPhotoData = await imageToBase64(values.groomPhoto.fileList[0].originFileObj);
+            }
+            if (values.groomSignature && values.groomSignature.fileList && values.groomSignature.fileList[0]) {
+                groomSignatureData = await imageToBase64(values.groomSignature.fileList[0].originFileObj);
+            }
+            if (values.bridePhoto && values.bridePhoto.fileList && values.bridePhoto.fileList[0]) {
+                bridePhotoData = await imageToBase64(values.bridePhoto.fileList[0].originFileObj);
+            }
+            if (values.brideSignature && values.brideSignature.fileList && values.brideSignature.fileList[0]) {
+                brideSignatureData = await imageToBase64(values.brideSignature.fileList[0].originFileObj);
+            }
+
+            const formData = {
+                ...values,
+                groomPhoto: groomPhotoData,
+                groomSignature: groomSignatureData,
+                bridePhoto: bridePhotoData,
+                brideSignature: brideSignatureData
+            };
+
+            const result = await submitMarriageApplication(formData);
             if (result.success) {
                 message.success(result.message);
                 form.resetFields();
@@ -96,6 +213,22 @@ export default function MarriageApplicationPage() {
                                 <Form.Item label="ঠিকানা" name="groomAddress" className="md:col-span-2 lg:col-span-2" rules={[{ required: true, message: 'ঠিকানা আবশ্যক' }]}>
                                     <Input.TextArea placeholder="পূর্ণ ঠিকানা দিন" className="rounded-xl p-3" rows={1} />
                                 </Form.Item>
+                                <Form.Item label="বরের ছবি" name="groomPhoto" valuePropName="file" rules={[{ required: true, message: 'বরের ছবি আবশ্যক' }]}>
+                                    <Upload listType="picture-card" maxCount={1} beforeUpload={() => false} accept="image/*">
+                                        <div className="flex flex-col items-center">
+                                            <FaCamera className="text-2xl text-gray-400 mb-2" />
+                                            <div className="text-xs text-gray-400 text-center">আপলোড</div>
+                                        </div>
+                                    </Upload>
+                                </Form.Item>
+                                <Form.Item label="বরের স্বাক্ষর" name="groomSignature" valuePropName="file" rules={[{ required: true, message: 'বরের স্বাক্ষর আবশ্যক' }]}>
+                                    <Upload listType="picture-card" maxCount={1} beforeUpload={() => false} accept="image/*">
+                                        <div className="flex flex-col items-center">
+                                            <FaSignature className="text-2xl text-gray-400 mb-2" />
+                                            <div className="text-xs text-gray-400 text-center">আপলোড</div>
+                                        </div>
+                                    </Upload>
+                                </Form.Item>
                             </div>
                         </section>
 
@@ -122,6 +255,22 @@ export default function MarriageApplicationPage() {
                                 </Form.Item>
                                 <Form.Item label="ঠিকানা" name="brideAddress" className="md:col-span-2 lg:col-span-2" rules={[{ required: true, message: 'ঠিকানা আবশ্যক' }]}>
                                     <Input.TextArea placeholder="পূর্ণ ঠিকানা দিন" className="rounded-xl p-3" rows={1} />
+                                </Form.Item>
+                                <Form.Item label="কনের ছবি" name="bridePhoto" valuePropName="file" rules={[{ required: true, message: 'কনের ছবি আবশ্যক' }]}>
+                                    <Upload listType="picture-card" maxCount={1} beforeUpload={() => false} accept="image/*">
+                                        <div className="flex flex-col items-center">
+                                            <FaCamera className="text-2xl text-gray-400 mb-2" />
+                                            <div className="text-xs text-gray-400 text-center">আপলোড</div>
+                                        </div>
+                                    </Upload>
+                                </Form.Item>
+                                <Form.Item label="কনের স্বাক্ষর" name="brideSignature" valuePropName="file" rules={[{ required: true, message: 'কনের স্বাক্ষর আবশ্যক' }]}>
+                                    <Upload listType="picture-card" maxCount={1} beforeUpload={() => false} accept="image/*">
+                                        <div className="flex flex-col items-center">
+                                            <FaSignature className="text-2xl text-gray-400 mb-2" />
+                                            <div className="text-xs text-gray-400 text-center">আপলোড</div>
+                                        </div>
+                                    </Upload>
                                 </Form.Item>
                             </div>
                         </section>
@@ -207,22 +356,84 @@ export default function MarriageApplicationPage() {
 
                         {/* Kaji Selection & Declaration */}
                         <section className="bg-gray-100 p-8 rounded-3xl border border-gray-200">
-                             <Form.Item label="কাজী নির্বাচন করুন" name="kajiId" rules={[{ required: true, message: 'কাজী নির্বাচন আবশ্যক' }]}>
-                                <Select 
-                                    placeholder="নিকাহ রেজিস্ট্রার (কাজী) নির্বাচন করুন" 
-                                    className="h-14"
-                                    loading={loadingKajis}
-                                    showSearch
-                                    optionFilterProp="children"
-                                    filterOption={(input, option) =>
-                                        (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-                                    }
-                                    options={kajis.map(kaji => ({
-                                        value: kaji.id,
-                                        label: `${kaji.fullName} (${kaji.licenseNumber})`
-                                    }))}
-                                />
-                            </Form.Item>
+                             <div className="mb-8">
+                                <h2 className="text-xl font-bold text-gray-900 mb-4 pb-2 border-b border-gray-300">কাজী নির্বাচন করুন</h2>
+                                <p className="text-gray-600 mb-4 text-sm mt-2">আপনার এলাকার কাজী খুঁজে পেতে বিভাগ, জেলা এবং উপজেলা নির্বাচন করুন।</p>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                                    <Select 
+                                        placeholder="বিভাগ নির্বাচন করুন" 
+                                        size="large" 
+                                        className="w-full h-12"
+                                        value={selectedDivision}
+                                        onChange={handleDivisionChange}
+                                        loading={fetchingDivisions}
+                                    >
+                                        {divisions.map((div) => (
+                                            <Option key={div.division} value={div.division}>
+                                                {div.divisionbn}
+                                            </Option>
+                                        ))}
+                                    </Select>
+
+                                    <Select 
+                                        placeholder="জেলা নির্বাচন করুন" 
+                                        size="large" 
+                                        className="w-full h-12"
+                                        value={selectedDistrict}
+                                        onChange={handleDistrictChange}
+                                        loading={fetchingDistricts}
+                                        disabled={!districts.length}
+                                    >
+                                        {districts.map((dist) => (
+                                            <Option key={dist.district} value={dist.district}>
+                                                {dist.districtbn}
+                                            </Option>
+                                        ))}
+                                    </Select>
+
+                                    <Select 
+                                        placeholder="উপজেলা নির্বাচন করুন" 
+                                        size="large" 
+                                        className="w-full h-12"
+                                        value={selectedUpazila}
+                                        onChange={(val) => setSelectedUpazila(val)}
+                                        loading={fetchingUpazillas}
+                                        disabled={!upazillas.length}
+                                    >
+                                        {upazillas.map((up) => (
+                                            <Option key={up} value={up}>
+                                                {up}
+                                            </Option>
+                                        ))}
+                                    </Select>
+                                </div>
+
+                                <Form.Item name="kajiId" rules={[{ required: true, message: 'কাজী নির্বাচন আবশ্যক' }]} hidden>
+                                    <Input />
+                                </Form.Item>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-h-[500px] overflow-y-auto px-1 py-1 custom-scrollbar">
+                                    {loadingKajis ? (
+                                        <div className="col-span-full py-10 flex justify-center">
+                                            <Spin size="large" />
+                                        </div>
+                                    ) : filteredKajis.length > 0 ? (
+                                        filteredKajis.map(kaji => (
+                                            <KajiCard 
+                                                key={kaji.id} 
+                                                kaji={kaji} 
+                                                isSelected={selectedKajiId === kaji.id}
+                                                onClick={() => handleKajiSelect(kaji.id)}
+                                            />
+                                        ))
+                                    ) : (
+                                        <div className="col-span-full py-10 bg-white rounded-2xl border border-gray-100 flex items-center justify-center">
+                                            <Empty description={(!selectedDivision || !selectedDistrict || !selectedUpazila) ? "কাজী দেখতে সম্পূর্ণ ঠিকানা নির্বাচন করুন" : "এই এলাকায় কোনো কাজী পাওয়া যায়নি"} />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
 
                             <Form.Item 
                                 name="declarationAccepted" 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Modal, Button, Tag, Descriptions } from "antd";
+import { Modal, Button, Tag, Descriptions, Image } from "antd";
 import { FaEye, FaFileSignature, FaBalanceScale } from "react-icons/fa";
 
 export default function UserApplicationDetails({ application, type }) {
@@ -76,6 +76,20 @@ export default function UserApplicationDetails({ application, type }) {
                                         <Descriptions.Item label="মাতার নাম">{application.groomMotherName}</Descriptions.Item>
                                         <Descriptions.Item label="ঠিকানা">{application.groomAddress}</Descriptions.Item>
                                     </Descriptions>
+                                    <div className="mt-4 grid grid-cols-2 gap-4">
+                                        {application.groomPhoto && (
+                                            <div>
+                                                <p className="text-xs text-blue-800 font-bold mb-1">বরের ছবি</p>
+                                                <Image src={application.groomPhoto} alt="Groom Photo" className="rounded-lg border border-blue-200" width={100} />
+                                            </div>
+                                        )}
+                                        {application.groomSignature && (
+                                            <div>
+                                                <p className="text-xs text-blue-800 font-bold mb-1">বরের স্বাক্ষর</p>
+                                                <Image src={application.groomSignature} alt="Groom Signature" className="rounded-lg border border-blue-200" width={100} />
+                                            </div>
+                                        )}
+                                    </div>
                                 </section>
 
                                 <section className="bg-pink-50/50 p-5 rounded-2xl border border-pink-100">
@@ -87,6 +101,20 @@ export default function UserApplicationDetails({ application, type }) {
                                         <Descriptions.Item label="মাতার নাম">{application.brideMotherName}</Descriptions.Item>
                                         <Descriptions.Item label="ঠিকানা">{application.brideAddress}</Descriptions.Item>
                                     </Descriptions>
+                                    <div className="mt-4 grid grid-cols-2 gap-4">
+                                        {application.bridePhoto && (
+                                            <div>
+                                                <p className="text-xs text-pink-800 font-bold mb-1">কনের ছবি</p>
+                                                <Image src={application.bridePhoto} alt="Bride Photo" className="rounded-lg border border-pink-200" width={100} />
+                                            </div>
+                                        )}
+                                        {application.brideSignature && (
+                                            <div>
+                                                <p className="text-xs text-pink-800 font-bold mb-1">কনের স্বাক্ষর</p>
+                                                <Image src={application.brideSignature} alt="Bride Signature" className="rounded-lg border border-pink-200" width={100} />
+                                            </div>
+                                        )}
+                                    </div>
                                 </section>
                             </>
                         ) : (

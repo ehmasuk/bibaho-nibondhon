@@ -10,7 +10,7 @@ export default async function UserDashboardPage() {
 
     // Fetch user data with applications
     const userData = await prisma.user.findUnique({
-        where: { nid: session?.user?.nid },
+        where: { id: session?.user?.id },
         include: {
             marriageApplication: true,
             divorceApplication: true

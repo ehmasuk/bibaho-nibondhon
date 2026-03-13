@@ -12,11 +12,11 @@ export default function KajiLoginForm() {
     const handleSubmit = async (values) => {
         setLoading(true);
         try {
-            await loginAction({ licenseNumber: values.licenseNumber, password: values.password });
+            await loginAction({ ...values, role: "KAJI" });
             window.location.href = "/kaji/dashboard";
             message.success("কাজী লগইন সফল হয়েছে");
         } catch (error) {
-            message.error("ভুল লাইসেন্স নম্বর অথবা পাসওয়ার্ড");
+            message.error("ভুল এনআইডি নম্বর অথবা পাসওয়ার্ড");
         } finally {
             setLoading(false);
         }
@@ -26,17 +26,17 @@ export default function KajiLoginForm() {
         <Form onFinish={handleSubmit} layout="vertical">
             <div className="flex flex-col text-black">
                 <div>
-                    <label htmlFor="licenseNumber" className="mb-2 text-lg inline-block">
-                        লাইসেন্স নম্বর
+                    <label htmlFor="nid" className="mb-2 text-lg inline-block">
+                        এনআইডি নম্বর
                     </label>
                     <FormItem 
-                        name="licenseNumber" 
-                        rules={[{ required: true, message: "অনুগ্রহ করে আপনার লাইসেন্স নম্বর লিখুন" }]}
+                        name="nid" 
+                        rules={[{ required: true, message: "অনুগ্রহ করে আপনার এনআইডি নম্বর লিখুন" }]}
                     >
                         <input 
                             type="text" 
-                            id="licenseNumber" 
-                            placeholder="লাইসেন্স নম্বর"
+                            id="nid" 
+                            placeholder="এনআইডি নম্বর"
                             className="w-full outline-none p-4 border border-gray-200 rounded-xl focus:border-blue-500 transition" 
                         />
                     </FormItem>

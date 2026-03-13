@@ -1,6 +1,7 @@
 import prisma from "@/prisma/prisma";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
+import uploadToCloudinary from "@/helpers/uploadToCloudinary";
 
 export async function POST(req) {
     try {
@@ -15,10 +16,11 @@ export async function POST(req) {
             division, 
             district, 
             upazila, 
-            addressLine 
+            addressLine,
+            image
         } = await req.json();
 
-        if (!fullName || !email || !password || !nid || !phone || !licenseNumber || !organizationName || !division || !district || !upazila || !addressLine) {
+        if (!fullName || !email || !password || !nid || !phone || !licenseNumber || !organizationName || !division || !district || !upazila || !addressLine || !image) {
             return NextResponse.json({ message: "সবগুলো ঘর পূরণ করা আবশ্যক" }, { status: 400 });
         }
 
@@ -37,6 +39,12 @@ export async function POST(req) {
             return NextResponse.json({ message: "এই এনআইডি, লাইসেন্স নম্বর বা ইমেইল দিয়ে ইতঃপূর্বে নিবন্ধন করা হয়েছে" }, { status: 400 });
         }
 
+        // Upload image to Cloudinary
+        let imageUrl = null;
+        if (image) {
+            imageUrl = await uploadToCloudinary(image);
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const newKaji = await prisma.kaji.create({
@@ -52,6 +60,7 @@ export async function POST(req) {
                 district,
                 upazila,
                 addressLine,
+                image: imageUrl,
                 status: "PENDING"
             }
         });

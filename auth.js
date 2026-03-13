@@ -17,11 +17,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return { id: "admin", nid: adminUser, role: "ADMIN" };
           }
 
-          // 2. Check Kaji (if licenseNumber is provided)
-          if (credentials.licenseNumber) {
-            const kaji = await prisma.kaji.findUnique({ where: { licenseNumber: credentials.licenseNumber } });
+          // 2. Check Kaji (if nid and role:KAJI is provided or if it's uniquely Kaji)
+          if (credentials.nid && credentials.role === "KAJI") {
+            const kaji = await prisma.kaji.findUnique({ where: { nid: credentials.nid } });
             if (kaji && await bcrypt.compare(credentials.password, kaji.password)) {
-              return { id: kaji.id, licenseNumber: kaji.licenseNumber, role: "KAJI" };
+              return { id: kaji.id, nid: kaji.nid, role: "KAJI", licenseNumber: kaji.licenseNumber };
             }
           }
 

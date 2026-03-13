@@ -3,6 +3,7 @@
 import prisma from "@/prisma/prisma";
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
+import uploadToCloudinary from "@/helpers/uploadToCloudinary";
 
 export async function submitMarriageApplication(values) {
     try {
@@ -40,7 +41,26 @@ export async function submitMarriageApplication(values) {
             return { success: false, message: "এই কনে এনআইডি নম্বর দিয়ে ইতিমধ্যে একটি বিবাহ নিবন্ধিত আছে (This Bride NID already has a marriage registry)" };
         }
 
-        // 4. Create Application
+        // 4. Upload Images to Cloudinary
+        let groomPhotoUrl = null;
+        let groomSignatureUrl = null;
+        let bridePhotoUrl = null;
+        let brideSignatureUrl = null;
+
+        if (values.groomPhoto) {
+            groomPhotoUrl = await uploadToCloudinary(values.groomPhoto);
+        }
+        if (values.groomSignature) {
+            groomSignatureUrl = await uploadToCloudinary(values.groomSignature);
+        }
+        if (values.bridePhoto) {
+            bridePhotoUrl = await uploadToCloudinary(values.bridePhoto);
+        }
+        if (values.brideSignature) {
+            brideSignatureUrl = await uploadToCloudinary(values.brideSignature);
+        }
+
+        // 5. Create Application
         await prisma.marriageApplication.create({
             data: {
                 userId,
@@ -50,11 +70,15 @@ export async function submitMarriageApplication(values) {
                 groomFatherName: values.groomFatherName,
                 groomMotherName: values.groomMotherName,
                 groomAddress: values.groomAddress,
+                groomPhoto: groomPhotoUrl,
+                groomSignature: groomSignatureUrl,
                 brideFullName: values.brideFullName,
                 brideNid: values.brideNid,
                 brideFatherName: values.brideFatherName,
                 brideMotherName: values.brideMotherName,
                 brideAddress: values.brideAddress,
+                bridePhoto: bridePhotoUrl,
+                brideSignature: brideSignatureUrl,
                 marriageDate: new Date(values.marriageDate),
                 denmohorAmount: parseInt(values.denmohorAmount),
                 marriageLocation: values.marriageLocation,

@@ -30,7 +30,8 @@ export async function getActiveKajis() {
                 division: true,
                 district: true,
                 upazila: true,
-                addressLine: true
+                addressLine: true,
+                image: true
             }
         });
         return { success: true, data: kajis };

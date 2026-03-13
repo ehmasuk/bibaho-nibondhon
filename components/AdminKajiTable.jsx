@@ -1,7 +1,7 @@
 "use client";
 
 import { updateKajiStatus } from "@/actions/kajiActions";
-import { Table, Tag, Space, Button, Modal, Descriptions, message, Select } from "antd";
+import { Table, Tag, Space, Button, Modal, Descriptions, message, Select, Image } from "antd";
 import { useState } from "react";
 import { FaEye, FaCheck, FaTimes, FaUndo } from "react-icons/fa";
 
@@ -134,7 +134,26 @@ export default function AdminKajiTable({ kajis }) {
                 width={800}
             >
                 {selectedKaji && (
-                    <Descriptions bordered column={2}>
+                    <div className="flex flex-col gap-6">
+                        {/* Kaji Photo Section */}
+                        {selectedKaji.image && (
+                            <div className="flex justify-center mb-4">
+                                <div className="p-1 border-2 border-dashed border-gray-200 rounded-3xl">
+                                    <Image 
+                                        src={selectedKaji.image} 
+                                        alt={selectedKaji.fullName} 
+                                        width={200} 
+                                        height={200}
+                                        className="rounded-2xl object-cover"
+                                        placeholder={
+                                            <div className="w-[200px] h-[200px] bg-gray-100 animate-pulse rounded-2xl" />
+                                        }
+                                    />
+                                </div>
+                            </div>
+                        )}
+                        
+                        <Descriptions bordered column={2}>
                         <Descriptions.Item label="নাম" span={2}>{selectedKaji.fullName}</Descriptions.Item>
                         <Descriptions.Item label="ইমেইল">{selectedKaji.email}</Descriptions.Item>
                         <Descriptions.Item label="ফোন">{selectedKaji.phone}</Descriptions.Item>
@@ -153,7 +172,8 @@ export default function AdminKajiTable({ kajis }) {
                         <Descriptions.Item label="নিবন্ধনের তারিখ">
                             {new Date(selectedKaji.createdAt).toLocaleDateString("bn-BD")}
                         </Descriptions.Item>
-                    </Descriptions>
+                        </Descriptions>
+                    </div>
                 )}
             </Modal>
         </>

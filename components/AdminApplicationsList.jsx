@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Modal, Button, Tag, Tabs, Descriptions } from "antd";
+import { Modal, Button, Tag, Tabs, Descriptions, Image } from "antd";
 import { FaEye, FaScroll, FaBalanceScale, FaUserTie } from "react-icons/fa";
 
 export default function AdminApplicationsList({ marriageApps, divorceApps }) {
@@ -167,6 +167,20 @@ export default function AdminApplicationsList({ marriageApps, divorceApps }) {
                                             <Descriptions.Item label="এনআইডি">{selectedApp.groomNid}</Descriptions.Item>
                                             <Descriptions.Item label="ঠিকানা">{selectedApp.groomAddress}</Descriptions.Item>
                                         </Descriptions>
+                                        <div className="mt-4 grid grid-cols-2 gap-4">
+                                            {selectedApp.groomPhoto && (
+                                                <div>
+                                                    <p className="text-xs text-blue-800 font-bold mb-1">বরের ছবি</p>
+                                                    <Image src={selectedApp.groomPhoto} alt="Groom Photo" className="rounded-lg border border-blue-200" width={100} />
+                                                </div>
+                                            )}
+                                            {selectedApp.groomSignature && (
+                                                <div>
+                                                    <p className="text-xs text-blue-800 font-bold mb-1">বরের স্বাক্ষর</p>
+                                                    <Image src={selectedApp.groomSignature} alt="Groom Signature" className="rounded-lg border border-blue-200" width={100} />
+                                                </div>
+                                            )}
+                                        </div>
                                     </section>
                                     <section className="bg-pink-50/50 p-5 rounded-2xl border border-pink-100">
                                         <h3 className="font-bold text-pink-900 mb-4 border-b border-pink-100 pb-2">কনের বিবরণ</h3>
@@ -175,6 +189,20 @@ export default function AdminApplicationsList({ marriageApps, divorceApps }) {
                                             <Descriptions.Item label="এনআইডি">{selectedApp.brideNid}</Descriptions.Item>
                                             <Descriptions.Item label="ঠিকানা">{selectedApp.brideAddress}</Descriptions.Item>
                                         </Descriptions>
+                                        <div className="mt-4 grid grid-cols-2 gap-4">
+                                            {selectedApp.bridePhoto && (
+                                                <div>
+                                                    <p className="text-xs text-pink-800 font-bold mb-1">কনের ছবি</p>
+                                                    <Image src={selectedApp.bridePhoto} alt="Bride Photo" className="rounded-lg border border-pink-200" width={100} />
+                                                </div>
+                                            )}
+                                            {selectedApp.brideSignature && (
+                                                <div>
+                                                    <p className="text-xs text-pink-800 font-bold mb-1">কনের স্বাক্ষর</p>
+                                                    <Image src={selectedApp.brideSignature} alt="Bride Signature" className="rounded-lg border border-pink-200" width={100} />
+                                                </div>
+                                            )}
+                                        </div>
                                     </section>
                                 </>
                             ) : (

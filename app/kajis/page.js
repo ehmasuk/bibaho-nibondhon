@@ -1,5 +1,5 @@
 import { getActiveKajis } from "@/actions/kajiActions";
-import KajiCard from "@/components/KajiCard";
+import KajiDirectoryClient from "@/components/KajiDirectoryClient";
 
 export default async function KajisListPage() {
     const response = await getActiveKajis();
@@ -19,20 +19,8 @@ export default async function KajisListPage() {
                     </p>
                 </div>
 
-                {/* Kajis Grid */}
-                {kajis.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {kajis.map((kaji) => (
-                            <KajiCard key={kaji.id} kaji={kaji} />
-                        ))}
-                    </div>
-                ) : (
-                    <div className="text-center py-20 bg-white rounded-3xl shadow-sm border border-gray-100">
-                        <div className="text-5xl mb-4">🤔</div>
-                        <h3 className="text-xl font-bold text-gray-800">কোনো কাজী পাওয়া যায়নি</h3>
-                        <p className="text-gray-500 mt-2">বর্তমানে কোনো সক্রিয় কাজী নেই বা কোনো তথ্য আপডেট করা হয়নি।</p>
-                    </div>
-                )}
+                {/* Searchable Directory Client */}
+                <KajiDirectoryClient initialKajis={kajis} />
             </div>
         </div>
     );

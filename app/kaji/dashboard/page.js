@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import prisma from "@/prisma/prisma";
 import Link from "next/link";
 import { FaCheckDouble, FaHome, FaScroll, FaSignOutAlt, FaTasks, FaUsers, FaBalanceScale } from "react-icons/fa";
+import KajiProfileSection from "@/components/KajiProfileSection";
 import KajiApplicationsList from "@/components/KajiApplicationsList";
 
 export default async function KajiDashboardPage() {
@@ -10,7 +11,7 @@ export default async function KajiDashboardPage() {
 
   // 1. Fetch kaji data
   const kajiData = await prisma.kaji.findUnique({
-    where: { licenseNumber: session?.user?.licenseNumber },
+    where: { id: session?.user?.id },
   });
 
   if (!kajiData) return <div>Unauthorized</div>;
@@ -48,22 +49,8 @@ export default async function KajiDashboardPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 pb-20">
-      <div className="max-w-screen-xl mx-auto px-6 pt-10 mb-10">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-          <div>
-            <h1 className="text-4xl font-extrabold tracking-tight text-gray-900">কাজী ড্যাশবোর্ড</h1>
-            <div className="flex items-center gap-3 mb-2">
-              <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${statusColors[kajiData?.status] || "bg-gray-500"}`}>
-                <div className="w-2 h-2 rounded-full bg-current animate-pulse"></div>
-                অ্যাকাউন্ট স্ট্যাটাস: {statusLabels[kajiData?.status] || kajiData?.status}
-              </div>
-            </div>
-            
-            <p className="text-gray-500 mt-2 text-lg font-medium">
-              লাইসেন্স নম্বর: <span className="text-indigo-600 font-mono">{session?.user?.licenseNumber}</span>
-            </p>
-          </div>
-
+      <div className="max-w-screen-xl mx-auto px-6 pt-10 mb-10 flex justify-between items-center">
+          <h1 className="text-4xl font-extrabold tracking-tight text-gray-900">কাজী ড্যাশবোর্ড</h1>
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center justify-center w-12 h-12 bg-white text-gray-700 rounded-2xl hover:bg-gray-100 transition shadow-sm border border-gray-200 text-xl">
               <FaHome />
@@ -77,10 +64,12 @@ export default async function KajiDashboardPage() {
               </button>
             </form>
           </div>
-        </div>
       </div>
 
       <main className="max-w-screen-xl mx-auto px-6">
+        {/* Profile Section */}
+        <KajiProfileSection kaji={kajiData} />
+
         {/* Stats Summary */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
           <div className="bg-white p-7 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition">
