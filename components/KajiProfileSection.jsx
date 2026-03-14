@@ -4,56 +4,54 @@ export default function KajiProfileSection({ kaji }) {
     if (!kaji) return null;
 
     const statusColors = {
-        PENDING: "bg-yellow-100 text-yellow-800 border-yellow-200",
-        ACTIVE: "bg-green-100 text-green-800 border-green-200",
-        REJECTED: "bg-red-100 text-red-800 border-red-200",
+        PENDING: "bg-amber-100 text-amber-800 border-amber-200",
+        ACTIVE: "bg-emerald-100 text-emerald-800 border-emerald-200",
+        REJECTED: "bg-rose-100 text-rose-800 border-rose-200",
     };
 
     return (
-        <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden mb-10">
-            <div className="p-8 md:p-12">
-                <div className="flex flex-col lg:flex-row gap-10 items-center lg:items-start">
+        <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden transform hover:shadow-xl hover:shadow-primary/5 transition-all duration-500">
+            <div className="p-10 md:p-14">
+                <div className="flex flex-col lg:flex-row gap-14 items-center lg:items-start text-center lg:text-left">
                     {/* Profile Image */}
-                    <div className="relative group">
-                        <div className="w-48 h-48 rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
+                    <div className="relative group shrink-0">
+                        <div className="w-56 h-56 rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white group-hover:border-primary/5 transition-colors duration-500 ring-1 ring-slate-100">
                             {kaji.image ? (
                                 <img 
                                     src={kaji.image} 
                                     alt={kaji.fullName} 
-                                    className="w-full h-full object-cover transition duration-500 group-hover:scale-110"
+                                    className="w-full h-full object-cover transition duration-700 group-hover:scale-110"
                                 />
                             ) : (
-                                <div className="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300">
-                                    <FaUser size={64} />
+                                <div className="w-full h-full bg-slate-50 flex items-center justify-center text-slate-200">
+                                    <FaUser size={80} />
                                 </div>
                             )}
                         </div>
-                        <div className="absolute -bottom-3 -right-3">
-                           <span className={`px-4 py-1.5 rounded-full text-xs font-bold border ${statusColors[kaji.status] || "bg-gray-100 text-gray-800 border-gray-200"}`}>
+                        <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 lg:left-auto lg:right-0 lg:translate-x-0">
+                           <span className={`px-6 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest border shadow-lg ${statusColors[kaji.status] || "bg-slate-100 text-slate-800 border-slate-200"}`}>
                                 {kaji.status}
                            </span>
                         </div>
                     </div>
 
                     {/* Information Grid */}
-                    <div className="flex-1 w-full text-black">
-                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-                            <div>
-                                <h2 className="text-3xl font-black text-gray-900 mb-1">{kaji.fullName || "কাজী নাম নেই"}</h2>
-                                <p className="text-indigo-600 font-bold flex items-center gap-2">
-                                    <FaBriefcase /> {kaji.organizationName || "প্রতিষ্ঠানের নাম নেই"}
-                                </p>
-                            </div>
+                    <div className="flex-1 w-full mt-4 lg:mt-0">
+                        <div className="mb-12">
+                            <h2 className="text-4xl font-black text-slate-900 mb-2 tracking-tight">{kaji.fullName || "কাজী নাম নেই"}</h2>
+                            <p className="text-primary font-black flex items-center justify-center lg:justify-start gap-2 text-lg tracking-wide uppercase">
+                                <FaBriefcase className="opacity-50" /> {kaji.organizationName || "প্রতিষ্ঠানের নাম নেই"}
+                            </p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-12">
                             <InfoItem icon={<FaIdCard />} label="জাতীয় পরিচয়পত্র (NID)" value={kaji.nid} />
                             <InfoItem icon={<FaBriefcase />} label="লাইসেন্স নম্বর" value={kaji.licenseNumber} />
                             <InfoItem icon={<FaEnvelope />} label="ইমেইল এড্রেস" value={kaji.email} />
                             <InfoItem icon={<FaPhone />} label="ফোন নম্বর" value={kaji.phone} />
                             <InfoItem 
                                 icon={<FaMapMarkerAlt />} 
-                                label="লকেশন" 
+                                label="অবস্থান" 
                                 value={`${kaji.upazila}, ${kaji.district}, ${kaji.division}`} 
                                 fullWidth
                             />
@@ -73,13 +71,13 @@ export default function KajiProfileSection({ kaji }) {
 
 function InfoItem({ icon, label, value, fullWidth = false }) {
     return (
-        <div className={`flex items-start gap-4 ${fullWidth ? 'md:col-span-2 lg:col-span-2' : ''}`}>
-            <div className="mt-1 bg-slate-50 p-2.5 rounded-xl text-indigo-600 text-lg">
+        <div className={`flex flex-col md:flex-row items-center lg:items-start gap-4 ${fullWidth ? 'md:col-span-2' : ''}`}>
+            <div className="shrink-0 bg-slate-50 p-4 rounded-[1.25rem] text-primary text-xl shadow-inner border border-slate-100/50">
                 {icon}
             </div>
-            <div>
-                <p className="text-[10px] uppercase font-black tracking-widest text-gray-400 mb-1">{label}</p>
-                <p className="text-gray-900 font-bold leading-tight break-all">{value || "তথ্য নেই"}</p>
+            <div className="text-center lg:text-left">
+                <p className="text-[10px] uppercase font-black tracking-[0.2em] text-slate-400 mb-1">{label}</p>
+                <p className="text-slate-900 font-bold text-lg leading-snug break-all">{value || "তথ্য নেই"}</p>
             </div>
         </div>
     );

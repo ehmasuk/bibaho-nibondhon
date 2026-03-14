@@ -213,7 +213,7 @@ export default function MarriageApplicationPage() {
                                 <Form.Item label="মাতার নাম" name="groomMotherName" rules={[{ required: true, message: 'মাতার নাম আবশ্যক' }]}>
                                     <Input placeholder="মাতার সম্পূর্ণ নাম" className="rounded-xl p-3" />
                                 </Form.Item>
-                                <Form.Item label="ঠিকানা" name="groomAddress" className="md:col-span-2 lg:col-span-2" rules={[{ required: true, message: 'ঠিকানা আবশ্যক' }]}>
+                                <Form.Item label="ঠিকানা" name="groomAddress" rules={[{ required: true, message: 'ঠিকানা আবশ্যক' }]}>
                                     <Input.TextArea placeholder="পূর্ণ ঠিকানা দিন" className="rounded-xl p-3" rows={1} />
                                 </Form.Item>
                                 <Form.Item label="বরের ছবি" name="groomPhoto" valuePropName="file" rules={[{ required: true, message: 'বরের ছবি আবশ্যক' }]}>
@@ -259,7 +259,7 @@ export default function MarriageApplicationPage() {
                                 <Form.Item label="মাতার নাম" name="brideMotherName" rules={[{ required: true, message: 'মাতার নাম আবশ্যক' }]}>
                                     <Input placeholder="মাতার সম্পূর্ণ নাম" className="rounded-xl p-3" />
                                 </Form.Item>
-                                <Form.Item label="ঠিকানা" name="brideAddress" className="md:col-span-2 lg:col-span-2" rules={[{ required: true, message: 'ঠিকানা আবশ্যক' }]}>
+                                <Form.Item label="ঠিকানা" name="brideAddress" rules={[{ required: true, message: 'ঠিকানা আবশ্যক' }]}>
                                     <Input.TextArea placeholder="পূর্ণ ঠিকানা দিন" className="rounded-xl p-3" rows={1} />
                                 </Form.Item>
                                 <Form.Item label="কনের ছবি" name="bridePhoto" valuePropName="file" rules={[{ required: true, message: 'কনের ছবি আবশ্যক' }]}>

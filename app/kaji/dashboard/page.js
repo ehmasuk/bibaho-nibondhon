@@ -1,112 +1,106 @@
-import { logoutAction } from "@/actions/authActions";
 import { auth } from "@/auth";
 import prisma from "@/prisma/prisma";
 import Link from "next/link";
-import { FaCheckDouble, FaHome, FaScroll, FaSignOutAlt, FaTasks, FaUsers, FaBalanceScale } from "react-icons/fa";
-import KajiProfileSection from "@/components/KajiProfileSection";
-import KajiApplicationsList from "@/components/KajiApplicationsList";
+import { FaBalanceScale, FaScroll, FaTasks, FaUsers } from "react-icons/fa";
 
 export default async function KajiDashboardPage() {
   const session = await auth();
 
-  // 1. Fetch kaji data
-  const kajiData = await prisma.kaji.findUnique({
-    where: { id: session?.user?.id },
-  });
-
-  if (!kajiData) return <div>Unauthorized</div>;
-
-  // 2. Fetch applications
-  const [marriageApps, divorceApps] = await Promise.all([
+  // 1. Fetch kaji data and apps for summary
+  const [kajiData, marriageApps, divorceApps] = await Promise.all([
+    prisma.kaji.findUnique({ where: { id: session?.user?.id } }),
     prisma.marriageApplication.findMany({
-      where: { kajiId: kajiData.id },
+      where: { kajiId: session?.user?.id },
       orderBy: { createdAt: "desc" },
     }),
     prisma.divorceApplication.findMany({
-      where: { kajiId: kajiData.id },
+      where: { kajiId: session?.user?.id },
       orderBy: { createdAt: "desc" },
-    })
+    }),
   ]);
 
-  // 3. Calculate Stats
+  if (!kajiData) return <div>Unauthorized</div>;
+
+  // 2. Calculate Stats
   const totalTasks = marriageApps.length + divorceApps.length;
-  const newRequestsCount = [...marriageApps, ...divorceApps].filter(app => app.status === "PENDING").length;
-  const processedCount = [...marriageApps, ...divorceApps].filter(app => app.status !== "PENDING").length;
-  const marriageRegCount = marriageApps.filter(app => app.status === "ACCEPTED").length;
-  const divorceRegCount = divorceApps.filter(app => app.status === "ACCEPTED").length;
+  const newRequestsCount = [...marriageApps, ...divorceApps].filter((app) => app.status === "PENDING").length;
+  const marriageRegCount = marriageApps.filter((app) => app.status === "ACCEPTED").length;
+  const divorceRegCount = divorceApps.filter((app) => app.status === "ACCEPTED").length;
 
-  const statusColors = {
-    PENDING: "bg-yellow-200 text-yellow-950",
-    ACTIVE: "bg-green-200 text-green-950",
-    REJECTED: "bg-red-200 text-red-950",
-  };
-
-  const statusLabels = {
-    PENDING: "PENDING",
-    ACTIVE: "ACTIVE",
-    REJECTED: "REJECTED",
-  };
+  const stats = [
+    { label: "মোট আবেদন", value: totalTasks, icon: FaTasks, color: "bg-blue-100 text-blue-600", border: "border-blue-100" },
+    { label: "নতুন আবেদন", value: newRequestsCount, icon: FaUsers, color: "bg-orange-100 text-orange-600", border: "border-orange-100" },
+    { label: "বিবাহ নিবন্ধন", value: marriageRegCount, icon: FaScroll, color: "bg-primary/10 text-primary", border: "border-primary/10" },
+    { label: "তালাকনামা", value: divorceRegCount, icon: FaBalanceScale, color: "bg-red-100 text-red-600", border: "border-red-100" },
+  ];
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-20">
-      <div className="max-w-screen-xl mx-auto px-6 pt-10 mb-10 flex justify-between items-center">
-          <h1 className="text-4xl font-extrabold tracking-tight text-gray-900">কাজী ড্যাশবোর্ড</h1>
-          <div className="flex items-center gap-3">
-            <Link href="/" className="flex items-center justify-center w-12 h-12 bg-white text-gray-700 rounded-2xl hover:bg-gray-100 transition shadow-sm border border-gray-200 text-xl">
-              <FaHome />
-            </Link>
-            <form action={logoutAction}>
-              <button
-                type="submit"
-                className="flex items-center gap-2 bg-indigo-900 text-white px-8 py-3 h-12 rounded-2xl font-bold hover:bg-indigo-800 transition shadow-xl hover:scale-105 active:scale-95 duration-200"
-              >
-                <FaSignOutAlt /> সাইনআউট
-              </button>
-            </form>
-          </div>
+    <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      {/* Welcome Header */}
+      <div className="flex flex-col gap-2">
+        <h1 className="text-4xl font-black text-gray-900 tracking-tight">
+          স্বাগতম, <span className="text-primary">{kajiData.fullName}</span>
+        </h1>
+        <p className="text-slate-500 font-medium text-lg">আপনার আজকের ড্যাশবোর্ড ওভারভিউ এখানে দেওয়া হলো</p>
       </div>
 
-      <main className="max-w-screen-xl mx-auto px-6">
-        {/* Profile Section */}
-        <KajiProfileSection kaji={kajiData} />
+      {/* Stats Summary */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((stat, idx) => (
+          <div key={idx} className={`bg-white p-8 rounded-[2rem] shadow-sm border ${stat.border} hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group`}>
+            <div className={`w-14 h-14 ${stat.color} rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform duration-500`}>
+              <stat.icon />
+            </div>
+            <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-2">{stat.label}</p>
+            <p className="text-4xl font-black text-slate-900 tracking-tight">{stat.value}</p>
+          </div>
+        ))}
+      </div>
 
-        {/* Stats Summary */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-          <div className="bg-white p-7 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition">
-            <div className="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mb-4">
-              <FaTasks />
-            </div>
-            <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">Total Tasks</p>
-            <p className="text-3xl font-black text-gray-900">{totalTasks}</p>
-          </div>
-          <div className="bg-white p-7 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition text-orange-600">
-            <div className="w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center text-2xl mb-4">
-              <FaUsers />
-            </div>
-            <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">New Requests</p>
-            <p className="text-3xl font-black text-orange-600">{newRequestsCount}</p>
-          </div>
-          <div className="bg-white p-7 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition">
-            <div className="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-2xl mb-4">
-              <FaScroll />
-            </div>
-            <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">Marriage Reg.</p>
-            <p className="text-3xl font-black text-gray-900">{marriageRegCount}</p>
-          </div>
-          <div className="bg-white p-7 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition">
-            <div className="w-14 h-14 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center text-2xl mb-4">
-              <FaBalanceScale />
-            </div>
-            <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">Divorce Reg.</p>
-            <p className="text-3xl font-black text-gray-900">{divorceRegCount}</p>
+      {/* Quick Actions / Recent Activity Placeholder */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100">
+          <h2 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3">
+            <span className="w-2 h-8 bg-primary rounded-full"></span>
+            সাম্প্রতিক বিবাহ আবেদন
+          </h2>
+          <div className="space-y-4">
+            {marriageApps.slice(0, 3).map((app, i) => (
+              <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-primary/20 transition-colors">
+                <div>
+                  <p className="font-bold text-slate-900">{app.groomFullName}</p>
+                  <p className="text-xs text-slate-500">{new Date(app.createdAt).toLocaleDateString("bn-BD")}</p>
+                </div>
+                <Link href="/kaji/dashboard/marriage" className="text-primary font-bold text-sm hover:underline">
+                  বিস্তারিত
+                </Link>
+              </div>
+            ))}
+            {marriageApps.length === 0 && <p className="text-slate-400 italic">কোনো আবেদন নেই</p>}
           </div>
         </div>
 
-        {/* Dashboard Bottom Section */}
-        <div className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100">
-          <KajiApplicationsList marriageApps={marriageApps} divorceApps={divorceApps} />
+        <div className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100">
+          <h2 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3">
+            <span className="w-2 h-8 bg-red-600 rounded-full"></span>
+            সাম্প্রতিক তালাক আবেদন
+          </h2>
+          <div className="space-y-4">
+            {divorceApps.slice(0, 3).map((app, i) => (
+              <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-red-200 transition-colors">
+                <div>
+                  <p className="font-bold text-slate-900">{app.husbandFullName}</p>
+                  <p className="text-xs text-slate-500">{new Date(app.createdAt).toLocaleDateString("bn-BD")}</p>
+                </div>
+                <Link href="/kaji/dashboard/divorce" className="text-red-600 font-bold text-sm hover:underline">
+                  বিস্তারিত
+                </Link>
+              </div>
+            ))}
+            {divorceApps.length === 0 && <p className="text-slate-400 italic">কোনো আবেদন নেই</p>}
+          </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

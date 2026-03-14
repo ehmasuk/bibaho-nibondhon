@@ -7,7 +7,10 @@ import Header from "./Header";
 function MainLayout({ children }) {
   const pathname = usePathname();
 
-  const isDashboardRoute = pathname === "/admin/dashboard" || pathname === "/kaji/dashboard" || pathname === "/user/dashboard";
+  const isDashboardRoute = 
+    pathname.startsWith("/admin/dashboard") || 
+    pathname.startsWith("/kaji/dashboard") || 
+    pathname.startsWith("/user/dashboard");
   return (
     <div>
       {!isDashboardRoute && <Header />}
