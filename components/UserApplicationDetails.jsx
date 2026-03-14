@@ -72,6 +72,7 @@ export default function UserApplicationDetails({ application, type }) {
                                     <Descriptions column={1}>
                                         <Descriptions.Item label="নাম">{application.groomFullName}</Descriptions.Item>
                                         <Descriptions.Item label="এনআইডি">{application.groomNid}</Descriptions.Item>
+                                        <Descriptions.Item label="মোবাইল">{application.groomMobile}</Descriptions.Item>
                                         <Descriptions.Item label="পিতার নাম">{application.groomFatherName}</Descriptions.Item>
                                         <Descriptions.Item label="মাতার নাম">{application.groomMotherName}</Descriptions.Item>
                                         <Descriptions.Item label="ঠিকানা">{application.groomAddress}</Descriptions.Item>
@@ -97,9 +98,16 @@ export default function UserApplicationDetails({ application, type }) {
                                     <Descriptions column={1}>
                                         <Descriptions.Item label="নাম">{application.brideFullName}</Descriptions.Item>
                                         <Descriptions.Item label="এনআইডি">{application.brideNid}</Descriptions.Item>
+                                        <Descriptions.Item label="মোবাইল">{application.brideMobile}</Descriptions.Item>
                                         <Descriptions.Item label="পিতার নাম">{application.brideFatherName}</Descriptions.Item>
                                         <Descriptions.Item label="মাতার নাম">{application.brideMotherName}</Descriptions.Item>
                                         <Descriptions.Item label="ঠিকানা">{application.brideAddress}</Descriptions.Item>
+                                        {application.ukilName && (
+                                            <>
+                                                <Descriptions.Item label="উকিলের সম্পর্ক">{application.ukilRelation}</Descriptions.Item>
+                                                <Descriptions.Item label="উকিলের নাম">{application.ukilName}</Descriptions.Item>
+                                            </>
+                                        )}
                                     </Descriptions>
                                     <div className="mt-4 grid grid-cols-2 gap-4">
                                         {application.bridePhoto && (

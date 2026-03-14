@@ -73,6 +73,7 @@ model MarriageApplication {
   // Groom Info
   groomFullName   String
   groomNid        String
+  groomMobile     String?
   groomFatherName String
   groomMotherName String
   groomAddress    String
@@ -82,6 +83,7 @@ model MarriageApplication {
   // Bride Info
   brideFullName   String
   brideNid        String
+  brideMobile     String?
   brideFatherName String
   brideMotherName String
   brideAddress    String
@@ -104,6 +106,10 @@ model MarriageApplication {
   brideWitness1Nid  String
   brideWitness2Name String
   brideWitness2Nid  String
+
+  // Ukil Info
+  ukilName     String?
+  ukilRelation String?
 
   declarationAccepted Boolean
 

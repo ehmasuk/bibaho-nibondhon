@@ -67,6 +67,7 @@ export async function submitMarriageApplication(values) {
                 kajiId: values.kajiId,
                 groomFullName: values.groomFullName,
                 groomNid: values.groomNid,
+                groomMobile: values.groomMobile,
                 groomFatherName: values.groomFatherName,
                 groomMotherName: values.groomMotherName,
                 groomAddress: values.groomAddress,
@@ -74,6 +75,7 @@ export async function submitMarriageApplication(values) {
                 groomSignature: groomSignatureUrl,
                 brideFullName: values.brideFullName,
                 brideNid: values.brideNid,
+                brideMobile: values.brideMobile,
                 brideFatherName: values.brideFatherName,
                 brideMotherName: values.brideMotherName,
                 brideAddress: values.brideAddress,
@@ -90,6 +92,8 @@ export async function submitMarriageApplication(values) {
                 brideWitness1Nid: values.brideWitness1Nid,
                 brideWitness2Name: values.brideWitness2Name,
                 brideWitness2Nid: values.brideWitness2Nid,
+                ukilName: values.ukilName,
+                ukilRelation: values.ukilRelation,
                 declarationAccepted: values.declarationAccepted,
             }
         });

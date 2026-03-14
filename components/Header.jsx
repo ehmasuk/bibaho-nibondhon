@@ -21,20 +21,20 @@ function Header() {
   ];
 
   return (
-    <nav className="shadow bg-white sticky top-0 z-50">
+    <nav className="shadow-lg bg-primary text-white sticky top-0 z-50">
       <div className="flex items-center justify-between max-w-screen-xl mx-auto px-4 py-3">
         <div>
           <Logo />
         </div>
         <div>
           <div className="flex items-center gap-8">
-            <Link href="/kajis" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+            <Link href="/kajis" className="text-white/90 hover:text-white font-medium transition-colors">
               কাজীদের তথ্যের তালিকা
             </Link>
             {status == "authenticated" ? (
               <div className="relative group">
                 <Link href="/">
-                  <AiOutlineUser className="hover:text-blue-600 " fontSize={25} />
+                  <AiOutlineUser className="hover:text-pink-200 transition-colors duration-200" fontSize={25} />
                 </Link>
                 <ProfileDropdown session={session} />
               </div>

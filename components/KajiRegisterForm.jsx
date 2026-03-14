@@ -109,264 +109,309 @@ export default function KajiRegisterForm() {
     };
 
     return (
-        <Form form={form} onFinish={handleSubmit} layout="vertical">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-black">
-                {/* Photo Upload */}
-                <div className="md:col-span-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 p-6 rounded-2xl mb-4 bg-gray-50/50">
-                    <label className="mb-4 text-lg font-bold text-gray-700">আপনার ছবি আপলোড করুন</label>
-                    <FormItem 
-                        name="image" 
-                        rules={[{ required: true, message: "অনুগ্রহ করে আপনার ছবি আপলোড করুন" }]}
-                        valuePropName="file"
-                    >
-                        <Upload
-                            listType="picture-card"
-                            maxCount={1}
-                            beforeUpload={() => false}
-                            accept="image/*"
-                            className="bg-white"
+        <Form form={form} onFinish={handleSubmit} layout="vertical" className="space-y-8">
+            <div className="flex flex-col gap-10">
+                {/* Section 1: Personal Information */}
+                <div className="space-y-6">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-1.5 h-6 bg-primary rounded-full"></div>
+                        <h2 className="text-xl font-bold text-gray-800">ব্যক্তিগত তথ্য</h2>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Photo Upload - More Modern Styled */}
+                        <div className="md:col-span-2">
+                            <FormItem 
+                                name="image" 
+                                rules={[{ required: true, message: "অনুগ্রহ করে আপনার ছবি আপলোড করুন" }]}
+                                valuePropName="file"
+                                className="mb-0"
+                            >
+                                <Upload
+                                    listType="picture-card"
+                                    maxCount={1}
+                                    beforeUpload={() => false}
+                                    accept="image/*"
+                                    className="kaji-photo-upload"
+                                >
+                                    <div className="flex flex-col items-center justify-center p-4">
+                                        <div className="w-12 h-12 bg-primary/5 rounded-2xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
+                                            <FaCamera className="text-2xl text-primary" />
+                                        </div>
+                                        <div className="text-sm font-semibold text-gray-700">ছবি আপলোড করুন</div>
+                                        <div className="text-[10px] text-gray-400 mt-1 uppercase tracking-tighter">Passport Size Image</div>
+                                    </div>
+                                </Upload>
+                            </FormItem>
+                        </div>
+
+                        {/* Full Name */}
+                        <div className="md:col-span-2">
+                            <label htmlFor="fullName" className="mb-2 text-sm font-bold text-gray-700 flex items-center gap-2">
+                                পূর্ণ নাম
+                            </label>
+                            <FormItem 
+                                name="fullName" 
+                                rules={[{ required: true, message: "অনুগ্রহ করে আপনার পূর্ণ নাম লিখুন" }]}
+                            >
+                                <input 
+                                    type="text" 
+                                    id="fullName" 
+                                    placeholder="আপনার নাম লিখুন"
+                                    className="w-full outline-none p-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:border-primary focus:ring-4 focus:ring-primary/5 focus:bg-white transition-all duration-300" 
+                                />
+                            </FormItem>
+                        </div>
+
+                        {/* Email */}
+                        <div>
+                            <label htmlFor="email" className="mb-2 text-sm font-bold text-gray-700">
+                                ইমেইল ঠিকানা
+                            </label>
+                            <FormItem 
+                                name="email" 
+                                rules={[
+                                    { required: true, message: "অনুগ্রহ করে আপনার ইমেইল লিখুন" },
+                                    { type: 'email', message: "সঠিক ইমেইল এড্রেস লিখুন" }
+                                ]}
+                            >
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    placeholder="example@mail.com"
+                                    className="w-full outline-none p-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:border-primary focus:ring-4 focus:ring-primary/5 focus:bg-white transition-all duration-300" 
+                                />
+                            </FormItem>
+                        </div>
+
+                        {/* Phone */}
+                        <div>
+                            <label htmlFor="phone" className="mb-2 text-sm font-bold text-gray-700">
+                                ফোন নম্বর
+                            </label>
+                            <FormItem 
+                                name="phone" 
+                                rules={[{ required: true, message: "অনুগ্রহ করে আপনার ফোন নম্বর লিখুন" }]}
+                            >
+                                <input 
+                                    type="text" 
+                                    id="phone" 
+                                    placeholder="০১XXXXXXXXX"
+                                    className="w-full outline-none p-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:border-primary focus:ring-4 focus:ring-primary/5 focus:bg-white transition-all duration-300" 
+                                />
+                            </FormItem>
+                        </div>
+
+                        {/* NID */}
+                        <div className="md:col-span-2">
+                            <label htmlFor="nid" className="mb-2 text-sm font-bold text-gray-700">
+                                জাতীয় পরিচয়পত্র নম্বর (NID)
+                            </label>
+                            <FormItem 
+                                name="nid" 
+                                rules={[{ required: true, message: "অনুগ্রহ করে আপনার NID নম্বর লিখুন" }]}
+                            >
+                                <input 
+                                    type="text" 
+                                    id="nid" 
+                                    placeholder="আপনার ১০ বা ১৭ ডিজিটের এনআইডি নম্বর"
+                                    className="w-full outline-none p-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:border-primary focus:ring-4 focus:ring-primary/5 focus:bg-white transition-all duration-300" 
+                                />
+                            </FormItem>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Section 2: Professional Information */}
+                <div className="space-y-6">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-1.5 h-6 bg-primary rounded-full"></div>
+                        <h2 className="text-xl font-bold text-gray-800">পেশাগত তথ্য</h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* License Number */}
+                        <div>
+                            <label htmlFor="licenseNumber" className="mb-2 text-sm font-bold text-gray-700">
+                                লাইসেন্স নম্বর
+                            </label>
+                            <FormItem 
+                                name="licenseNumber" 
+                                rules={[{ required: true, message: "অনুগ্রহ করে আপনার লাইসেন্স নম্বর লিখুন" }]}
+                            >
+                                <input 
+                                    type="text" 
+                                    id="licenseNumber" 
+                                    placeholder="লাইসেন্স নম্বর লিখুন"
+                                    className="w-full outline-none p-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:border-primary focus:ring-4 focus:ring-primary/5 focus:bg-white transition-all duration-300" 
+                                />
+                            </FormItem>
+                        </div>
+
+                        {/* Organization Name */}
+                        <div>
+                            <label htmlFor="organizationName" className="mb-2 text-sm font-bold text-gray-700">
+                                প্রতিষ্ঠানের নাম
+                            </label>
+                            <FormItem 
+                                name="organizationName" 
+                                rules={[{ required: true, message: "অনুগ্রহ করে আপনার প্রতিষ্ঠানের নাম লিখুন" }]}
+                            >
+                                <input 
+                                    type="text" 
+                                    id="organizationName" 
+                                    placeholder="প্রতিষ্ঠানের নাম"
+                                    className="w-full outline-none p-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:border-primary focus:ring-4 focus:ring-primary/5 focus:bg-white transition-all duration-300" 
+                                />
+                            </FormItem>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Section 3: Location Details */}
+                <div className="space-y-6">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-1.5 h-6 bg-primary rounded-full"></div>
+                        <h2 className="text-xl font-bold text-gray-800">ঠিকানা ও অবস্থান</h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {/* Division */}
+                        <div>
+                            <label className="mb-2 text-sm font-bold text-gray-700 block">
+                                বিভাগ
+                            </label>
+                            <FormItem 
+                                name="division" 
+                                rules={[{ required: true, message: "বিভাগ নির্বাচন করুন" }]}
+                            >
+                                <Select 
+                                    placeholder="বিভাগ Choose" 
+                                    size="large" 
+                                    className="w-full custom-select"
+                                    onChange={handleDivisionChange}
+                                    loading={fetchingDivisions}
+                                >
+                                    {divisions.map((div) => (
+                                        <Option key={div.division} value={div.division}>
+                                            {div.divisionbn}
+                                        </Option>
+                                    ))}
+                                </Select>
+                            </FormItem>
+                        </div>
+
+                        {/* District */}
+                        <div>
+                            <label className="mb-2 text-sm font-bold text-gray-700 block">
+                                জেলা
+                            </label>
+                            <FormItem 
+                                name="district" 
+                                rules={[{ required: true, message: "জেলা নির্বাচন করুন" }]}
+                            >
+                                <Select 
+                                    placeholder="জেলা Choose" 
+                                    size="large" 
+                                    className="w-full custom-select"
+                                    onChange={handleDistrictChange}
+                                    loading={fetchingDistricts}
+                                    disabled={!districts.length}
+                                >
+                                    {districts.map((dist) => (
+                                        <Option key={dist.district} value={dist.district}>
+                                            {dist.districtbn}
+                                        </Option>
+                                    ))}
+                                </Select>
+                            </FormItem>
+                        </div>
+
+                        {/* Upazila */}
+                        <div>
+                            <label className="mb-2 text-sm font-bold text-gray-700 block">
+                                উপজেলা
+                            </label>
+                            <FormItem 
+                                name="upazila" 
+                                rules={[{ required: true, message: "উপজেলা নির্বাচন করুন" }]}
+                            >
+                                <Select 
+                                    placeholder="উপজেলা Choose" 
+                                    size="large" 
+                                    className="w-full custom-select"
+                                    loading={fetchingUpazillas}
+                                    disabled={!upazillas.length}
+                                >
+                                    {upazillas.map((up) => (
+                                        <Option key={up} value={up}>
+                                            {up}
+                                        </Option>
+                                    ))}
+                                </Select>
+                            </FormItem>
+                        </div>
+
+                        {/* Address Line */}
+                        <div className="md:col-span-3">
+                            <label htmlFor="addressLine" className="mb-2 text-sm font-bold text-gray-700">
+                                বিস্তারিত ঠিকানা
+                            </label>
+                            <FormItem 
+                                name="addressLine" 
+                                rules={[{ required: true, message: "অনুগ্রহ করে আপনার বিস্তারিত ঠিকানা লিখুন" }]}
+                            >
+                                <input 
+                                    type="text" 
+                                    id="addressLine" 
+                                    placeholder="গ্রাম, রাস্তা নম্বর, এলাকা"
+                                    className="w-full outline-none p-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:border-primary focus:ring-4 focus:ring-primary/5 focus:bg-white transition-all duration-300" 
+                                />
+                            </FormItem>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Section 4: Security */}
+                <div className="space-y-6">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-1.5 h-6 bg-primary rounded-full"></div>
+                        <h2 className="text-xl font-bold text-gray-800">নিরাপত্তা</h2>
+                    </div>
+
+                    <div className="max-w-md">
+                        <label htmlFor="password" className="mb-2 text-sm font-bold text-gray-700 block">
+                            পাসওয়ার্ড নির্ধারণ করুন
+                        </label>
+                        <FormItem 
+                            name="password" 
+                            rules={[{ required: true, message: "অনুগ্রহ করে আপনার পাসওয়ার্ড লিখুন" }]}
                         >
-                            <div className="flex flex-col items-center">
-                                <FaCamera className="text-2xl text-gray-400 mb-2" />
-                                <div className="text-xs text-gray-400 text-center px-2">পাসপোর্ট সাইজ ছবি (প্রস্তাবিত)</div>
-                            </div>
-                        </Upload>
-                    </FormItem>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                placeholder="কমপক্ষে ৬ অক্ষরের শক্তিশালী পাসওয়ার্ড"
+                                className="w-full outline-none p-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:border-primary focus:ring-4 focus:ring-primary/5 focus:bg-white transition-all duration-300" 
+                            />
+                        </FormItem>
+                    </div>
                 </div>
 
-                {/* Full Name */}
-                <div className="md:col-span-2">
-                    <label htmlFor="fullName" className="mb-2 text-base font-medium inline-block">
-                        পূর্ণ নাম
-                    </label>
-                    <FormItem 
-                        name="fullName" 
-                        rules={[{ required: true, message: "অনুগ্রহ করে আপনার পূর্ণ নাম লিখুন" }]}
-                    >
-                        <input 
-                            type="text" 
-                            id="fullName" 
-                            placeholder="আপনার নাম লিখুন"
-                            className="w-full outline-none p-3 border border-gray-200 rounded-xl focus:border-blue-500 transition" 
-                        />
-                    </FormItem>
-                </div>
-
-                {/* Email */}
-                <div>
-                    <label htmlFor="email" className="mb-2 text-base font-medium inline-block">
-                        ইমেইল
-                    </label>
-                    <FormItem 
-                        name="email" 
-                        rules={[
-                            { required: true, message: "অনুগ্রহ করে আপনার ইমেইল লিখুন" },
-                            { type: 'email', message: "সঠিক ইমেইল এড্রেস লিখুন" }
-                        ]}
-                    >
-                        <input 
-                            type="email" 
-                            id="email" 
-                            placeholder="example@mail.com"
-                            className="w-full outline-none p-3 border border-gray-200 rounded-xl focus:border-blue-500 transition" 
-                        />
-                    </FormItem>
-                </div>
-
-                {/* Phone */}
-                <div>
-                    <label htmlFor="phone" className="mb-2 text-base font-medium inline-block">
-                        ফোন নম্বর
-                    </label>
-                    <FormItem 
-                        name="phone" 
-                        rules={[{ required: true, message: "অনুগ্রহ করে আপনার ফোন নম্বর লিখুন" }]}
-                    >
-                        <input 
-                            type="text" 
-                            id="phone" 
-                            placeholder="০১XXXXXXXXX"
-                            className="w-full outline-none p-3 border border-gray-200 rounded-xl focus:border-blue-500 transition" 
-                        />
-                    </FormItem>
-                </div>
-
-                {/* NID */}
-                <div>
-                    <label htmlFor="nid" className="mb-2 text-base font-medium inline-block">
-                        জাতীয় পরিচয়পত্র নম্বর (NID)
-                    </label>
-                    <FormItem 
-                        name="nid" 
-                        rules={[{ required: true, message: "অনুগ্রহ করে আপনার NID নম্বর লিখুন" }]}
-                    >
-                        <input 
-                            type="text" 
-                            id="nid" 
-                            placeholder="NID নম্বর"
-                            className="w-full outline-none p-3 border border-gray-200 rounded-xl focus:border-blue-500 transition" 
-                        />
-                    </FormItem>
-                </div>
-
-                {/* License Number */}
-                <div>
-                    <label htmlFor="licenseNumber" className="mb-2 text-base font-medium inline-block">
-                        লাইসেন্স নম্বর
-                    </label>
-                    <FormItem 
-                        name="licenseNumber" 
-                        rules={[{ required: true, message: "অনুগ্রহ করে আপনার লাইসেন্স নম্বর লিখুন" }]}
-                    >
-                        <input 
-                            type="text" 
-                            id="licenseNumber" 
-                            placeholder="লাইসেন্স নম্বর"
-                            className="w-full outline-none p-3 border border-gray-200 rounded-xl focus:border-blue-500 transition" 
-                        />
-                    </FormItem>
-                </div>
-
-                {/* Organization Name */}
-                <div className="md:col-span-2">
-                    <label htmlFor="organizationName" className="mb-2 text-base font-medium inline-block">
-                        প্রতিষ্ঠানের নাম
-                    </label>
-                    <FormItem 
-                        name="organizationName" 
-                        rules={[{ required: true, message: "অনুগ্রহ করে আপনার প্রতিষ্ঠানের নাম লিখুন" }]}
-                    >
-                        <input 
-                            type="text" 
-                            id="organizationName" 
-                            placeholder="প্রতিষ্ঠানের নাম"
-                            className="w-full outline-none p-3 border border-gray-200 rounded-xl focus:border-blue-500 transition" 
-                        />
-                    </FormItem>
-                </div>
-
-                {/* Division */}
-                <div>
-                    <label htmlFor="division" className="mb-2 text-base font-medium inline-block">
-                        বিভাগ
-                    </label>
-                    <FormItem 
-                        name="division" 
-                        rules={[{ required: true, message: "বিভাগ নির্বাচন করুন" }]}
-                    >
-                        <Select 
-                            placeholder="বিভাগ নির্বাচন করুন" 
-                            size="large" 
-                            className="w-full"
-                            onChange={handleDivisionChange}
-                            loading={fetchingDivisions}
-                        >
-                            {divisions.map((div) => (
-                                <Option key={div.division} value={div.division}>
-                                    {div.divisionbn}
-                                </Option>
-                            ))}
-                        </Select>
-                    </FormItem>
-                </div>
-
-                {/* District */}
-                <div>
-                    <label htmlFor="district" className="mb-2 text-base font-medium inline-block">
-                        জেলা
-                    </label>
-                    <FormItem 
-                        name="district" 
-                        rules={[{ required: true, message: "জেলা নির্বাচন করুন" }]}
-                    >
-                        <Select 
-                            placeholder="জেলা নির্বাচন করুন" 
-                            size="large" 
-                            className="w-full"
-                            onChange={handleDistrictChange}
-                            loading={fetchingDistricts}
-                            disabled={!districts.length}
-                        >
-                            {districts.map((dist) => (
-                                <Option key={dist.district} value={dist.district}>
-                                    {dist.districtbn}
-                                </Option>
-                            ))}
-                        </Select>
-                    </FormItem>
-                </div>
-
-                {/* Upazila */}
-                <div>
-                    <label htmlFor="upazila" className="mb-2 text-base font-medium inline-block">
-                        উপজেলা
-                    </label>
-                    <FormItem 
-                        name="upazila" 
-                        rules={[{ required: true, message: "উপজেলা নির্বাচন করুন" }]}
-                    >
-                        <Select 
-                            placeholder="উপজেলা নির্বাচন করুন" 
-                            size="large" 
-                            className="w-full"
-                            loading={fetchingUpazillas}
-                            disabled={!upazillas.length}
-                        >
-                            {upazillas.map((up) => (
-                                <Option key={up} value={up}>
-                                    {up}
-                                </Option>
-                            ))}
-                        </Select>
-                    </FormItem>
-                </div>
-
-
-                {/* Address Line */}
-                <div className="md:col-span-2">
-                    <label htmlFor="addressLine" className="mb-2 text-base font-medium inline-block">
-                        সারসংক্ষেপ ঠিকানা (গ্রাম, সড়ক)
-                    </label>
-                    <FormItem 
-                        name="addressLine" 
-                        rules={[{ required: true, message: "অনুগ্রহ করে আপনার ঠিকানা লিখুন" }]}
-                    >
-                        <input 
-                            type="text" 
-                            id="addressLine" 
-                            placeholder="গ্রাম, সড়ক নম্বর, বাসা নম্বর"
-                            className="w-full outline-none p-3 border border-gray-200 rounded-xl focus:border-blue-500 transition" 
-                        />
-                    </FormItem>
-                </div>
-
-                {/* Password */}
-                <div className="md:col-span-2">
-                    <label htmlFor="password" className="mb-2 text-base font-medium inline-block">
-                        পাসওয়ার্ড
-                    </label>
-                    <FormItem 
-                        name="password" 
-                        rules={[{ required: true, message: "অনুগ্রহ করে আপনার পাসওয়ার্ড লিখুন" }]}
-                    >
-                        <input 
-                            type="password" 
-                            id="password" 
-                            placeholder="কমপক্ষে ৬ অক্ষরের পাসওয়ার্ড"
-                            className="w-full outline-none p-3 border border-gray-200 rounded-xl focus:border-blue-500 transition" 
-                        />
-                    </FormItem>
-                </div>
-
-                <div className="md:col-span-2 mt-4">
+                <div className="pt-6">
                     <button 
                         disabled={loading} 
                         type="submit" 
-                        className="w-full flex items-center gap-2 justify-center bg-blue-600 text-white p-4 rounded-xl hover:bg-blue-700 transition uppercase font-bold shadow-lg"
+                        className="w-full sm:w-auto px-12 h-16 bg-primary text-white rounded-2xl hover:bg-[#832043] transition-all duration-300 uppercase tracking-widest font-extrabold shadow-xl shadow-primary/20 hover:shadow-primary/30 hover:-translate-y-1 flex items-center justify-center gap-3 disabled:opacity-70 disabled:transform-none"
                     >
-                        কাজী হিসেবে নিবন্ধন করুন
-                        {loading && <AiOutlineLoading3Quarters className="animate-spin" color="white" fontSize={16} />}
+                        {loading ? (
+                            <AiOutlineLoading3Quarters className="animate-spin" fontSize={20} />
+                        ) : (
+                            <>নিবন্ধন সম্পন্ন করুন</>
+                        )}
                     </button>
+                    <p className="mt-4 text-xs text-gray-400 italic">
+                        * সকল তথ্য নির্ভুলভাবে প্রদান করা বাধ্যতামূলক। ভুল তথ্যের জন্য আবেদন বাতিল হতে পারে।
+                    </p>
                 </div>
             </div>
         </Form>

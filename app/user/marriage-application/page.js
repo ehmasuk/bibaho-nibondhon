@@ -204,6 +204,9 @@ export default function MarriageApplicationPage() {
                                 <Form.Item label="এনআইডি নম্বর" name="groomNid" rules={[{ required: true, message: 'এনআইডি নম্বর আবশ্যক' }]}>
                                     <Input placeholder="এনআইডি নম্বর দিন" className="rounded-xl p-3" />
                                 </Form.Item>
+                                <Form.Item label="মোবাইল নম্বর" name="groomMobile" rules={[{ required: true, message: 'মোবাইল নম্বর আবশ্যক' }]}>
+                                    <Input placeholder="মোবাইল নম্বর দিন" className="rounded-xl p-3" />
+                                </Form.Item>
                                 <Form.Item label="পিতার নাম" name="groomFatherName" rules={[{ required: true, message: 'পিতার নাম আবশ্যক' }]}>
                                     <Input placeholder="পিতার সম্পূর্ণ নাম" className="rounded-xl p-3" />
                                 </Form.Item>
@@ -246,6 +249,9 @@ export default function MarriageApplicationPage() {
                                 </Form.Item>
                                 <Form.Item label="এনআইডি নম্বর" name="brideNid" rules={[{ required: true, message: 'এনআইডি নম্বর আবশ্যক' }]}>
                                     <Input placeholder="এনআইডি নম্বর দিন" className="rounded-xl p-3" />
+                                </Form.Item>
+                                <Form.Item label="মোবাইল নম্বর" name="brideMobile" rules={[{ required: true, message: 'মোবাইল নম্বর আবশ্যক' }]}>
+                                    <Input placeholder="মোবাইল নম্বর দিন" className="rounded-xl p-3" />
                                 </Form.Item>
                                 <Form.Item label="পিতার নাম" name="brideFatherName" rules={[{ required: true, message: 'পিতার নাম আবশ্যক' }]}>
                                     <Input placeholder="পিতার সম্পূর্ণ নাম" className="rounded-xl p-3" />
@@ -292,6 +298,29 @@ export default function MarriageApplicationPage() {
                                 </Form.Item>
                                 <Form.Item label="বিবাহের স্থান" name="marriageLocation" rules={[{ required: true, message: 'স্থান আবশ্যক' }]}>
                                     <Input prefix={<FaMapMarkerAlt className="text-gray-400" />} placeholder="ঠিকানা/স্থান" className="rounded-xl p-3" />
+                                </Form.Item>
+                            </div>
+                        </section>
+
+                        {/* Ukil Section */}
+                        <section className="bg-teal-50/50 p-6 rounded-2xl border border-teal-100">
+                            <div className="flex items-center gap-3 mb-8 text-teal-900">
+                                <span className="bg-teal-600 text-white p-2 rounded-lg text-xl">
+                                    <FaUsers />
+                                </span>
+                                <h2 className="text-xl font-bold uppercase tracking-wide">উকিলে তথ্য (Ukil Info)</h2>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <Form.Item label="উকিলের সম্পর্ক" name="ukilRelation" rules={[{ required: true, message: 'সম্পর্ক নির্বাচন করুন' }]}>
+                                    <Select placeholder="সম্পর্ক নির্বাচন করুন" className="h-12 rounded-xl">
+                                        <Option value="পিতা">পিতা (Father)</Option>
+                                        <Option value="চাচা">চাচা (Uncle)</Option>
+                                        <Option value="ভাই">ভাই (Brother)</Option>
+                                        <Option value="অন্যান্য">অন্যান্য (Other)</Option>
+                                    </Select>
+                                </Form.Item>
+                                <Form.Item label="উকিলের নাম" name="ukilName" rules={[{ required: true, message: 'নাম আবশ্যক' }]}>
+                                    <Input placeholder="উকিলের সম্পূর্ণ নাম" className="rounded-xl p-3" />
                                 </Form.Item>
                             </div>
                         </section>

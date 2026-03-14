@@ -165,6 +165,7 @@ export default function AdminApplicationsList({ marriageApps, divorceApps }) {
                                         <Descriptions column={1}>
                                             <Descriptions.Item label="নাম">{selectedApp.groomFullName}</Descriptions.Item>
                                             <Descriptions.Item label="এনআইডি">{selectedApp.groomNid}</Descriptions.Item>
+                                            <Descriptions.Item label="মোবাইল">{selectedApp.groomMobile}</Descriptions.Item>
                                             <Descriptions.Item label="ঠিকানা">{selectedApp.groomAddress}</Descriptions.Item>
                                         </Descriptions>
                                         <div className="mt-4 grid grid-cols-2 gap-4">
@@ -187,7 +188,14 @@ export default function AdminApplicationsList({ marriageApps, divorceApps }) {
                                         <Descriptions column={1}>
                                             <Descriptions.Item label="নাম">{selectedApp.brideFullName}</Descriptions.Item>
                                             <Descriptions.Item label="এনআইডি">{selectedApp.brideNid}</Descriptions.Item>
+                                            <Descriptions.Item label="মোবাইল">{selectedApp.brideMobile}</Descriptions.Item>
                                             <Descriptions.Item label="ঠিকানা">{selectedApp.brideAddress}</Descriptions.Item>
+                                            {selectedApp.ukilName && (
+                                                <>
+                                                    <Descriptions.Item label="উকিলের সম্পর্ক">{selectedApp.ukilRelation}</Descriptions.Item>
+                                                    <Descriptions.Item label="উকিলের নাম">{selectedApp.ukilName}</Descriptions.Item>
+                                                </>
+                                            )}
                                         </Descriptions>
                                         <div className="mt-4 grid grid-cols-2 gap-4">
                                             {selectedApp.bridePhoto && (

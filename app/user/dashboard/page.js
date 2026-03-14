@@ -23,84 +23,112 @@ export default async function UserDashboardPage() {
     const activeCount = (hasMarriageApp ? 1 : 0) + (hasDivorceApp ? 1 : 0);
 
     return (
-        <div className="min-h-screen bg-gray-50 pb-20">
-            <div className="max-w-screen-xl mx-auto px-4 pt-10 flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold text-gray-900">User Dashboard</h1>
-                    <p className="text-gray-500 mt-1 text-lg">Welcome back, NID: {session?.user?.nid}</p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <Link href="/" className="flex items-center justify-center w-12 h-12 bg-white text-gray-700 rounded-xl hover:bg-gray-100 transition shadow-sm border border-gray-200 text-xl">
-                        <FaHome />
-                    </Link>
-                    <form action={logoutAction}>
-                        <button type="submit" className="flex items-center gap-2 bg-red-600 text-white px-6 py-2 h-12 rounded-xl font-bold hover:bg-red-700 transition shadow-md">
-                            <FaSignOutAlt /> Sign Out
-                        </button>
-                    </form>
+        <div className="min-h-screen bg-[#FFF5F8] pb-20">
+            {/* Dashboard Header Profile Section */}
+            <div className="bg-primary pt-10 pb-24 px-4 sm:px-6 lg:px-8 shadow-md">
+                <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div className="text-center md:text-left text-white">
+                        <h1 className="text-3xl md:text-4xl font-extrabold mb-2 drop-shadow-sm">ব্যবহারকারী ড্যাশবোর্ড</h1>
+                        <p className="text-white/80 text-lg font-medium flex items-center justify-center md:justify-start gap-2">
+                            <span className="bg-white/20 px-3 py-1 rounded-full text-sm">এনআইডি: {session?.user?.nid}</span>
+                        </p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <Link href="/" className="flex items-center justify-center w-12 h-12 bg-white/10 hover:bg-white/20 text-white rounded-xl backdrop-blur-sm transition-all border border-white/20 hover:scale-105 shadow-sm">
+                            <FaHome size={22} />
+                        </Link>
+                        <form action={logoutAction}>
+                            <button type="submit" className="flex items-center gap-2 bg-white text-primary px-6 py-3 rounded-xl font-bold hover:bg-gray-100 transition shadow-lg hover:shadow-xl hover:-translate-y-0.5 duration-300">
+                                <FaSignOutAlt /> লগআউট
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
 
-            <main className="max-w-screen-xl mx-auto px-4 mt-10">
-
-
-                {/* Quick Actions */}
-                <div className="grid md:grid-cols-2 gap-10 mb-10">
-                    <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-                        <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-                            Actions
-                        </h2>
-                        <div className="flex flex-col gap-4">
+            <main className="max-w-7xl mx-auto px-4 -mt-12 relative z-10">
+                <div className="grid lg:grid-cols-2 gap-8">
+                    
+                    {/* Action Cards */}
+                    <div className="bg-white p-8 md:p-10 rounded-3xl shadow-xl shadow-primary/5 border border-primary/10 flex flex-col h-full">
+                        <div className="mb-8 border-b border-gray-100 pb-4">
+                            <h2 className="text-2xl font-extrabold text-gray-800 flex items-center gap-3">
+                                <div className="p-2 bg-primary/10 text-primary rounded-lg"><FaFileSignature size={20} /></div>
+                                নতুন আবেদন
+                            </h2>
+                            <p className="text-gray-500 text-sm mt-2">আপনার প্রয়োজনীয় সেবার জন্য আবেদন শুরু করুন</p>
+                        </div>
+                        
+                        <div className="flex flex-col gap-5 flex-grow justify-center">
                             <Link 
                                 href={hasMarriageApp ? "#" : "/user/marriage-application"} 
-                                className={`w-full text-left p-4 rounded-xl border transition flex items-center justify-between group ${hasMarriageApp ? 'bg-gray-50 border-gray-200 cursor-not-allowed' : 'border-gray-200 hover:border-blue-500 hover:bg-blue-50'}`}
+                                className={`w-full p-5 md:p-6 rounded-2xl border-2 transition-all duration-300 flex items-center justify-between group ${hasMarriageApp ? 'bg-gray-50 border-gray-100 cursor-not-allowed opacity-70' : 'bg-white border-primary/20 hover:border-primary hover:bg-primary/5 hover:shadow-md'}`}
                             >
-                                <span className={`font-semibold ${hasMarriageApp ? 'text-gray-400' : 'text-gray-700'}`}>Apply for Marriage Registration</span>
-                                <span className={`${hasMarriageApp ? 'bg-gray-400' : 'bg-blue-600 group-hover:px-4'} text-white p-2 rounded-lg transition-all uppercase text-xs font-bold tracking-widest`}>
-                                    {hasMarriageApp ? 'Applied' : 'Start'}
+                                <div className="flex items-center gap-4">
+                                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl shadow-sm ${hasMarriageApp ? 'bg-gray-200 text-gray-400' : 'bg-primary text-white group-hover:scale-110 transition-transform'}`}>
+                                        <FaFileSignature />
+                                    </div>
+                                    <span className={`text-lg font-bold md:text-xl ${hasMarriageApp ? 'text-gray-400' : 'text-gray-800 group-hover:text-primary transition-colors'}`}>বিবাহ নিবন্ধন আবেদন</span>
+                                </div>
+                                <span className={`${hasMarriageApp ? 'text-gray-400 bg-gray-100' : 'text-primary bg-primary/10 group-hover:bg-primary group-hover:text-white'} px-4 py-2 rounded-full text-sm font-bold tracking-wider transition-all`}>
+                                    {hasMarriageApp ? 'আবেদনকৃত' : 'শুরু করুন'}
                                 </span>
                             </Link>
 
                             <Link 
                                 href={hasDivorceApp ? "#" : "/user/divorce-application"} 
-                                className={`w-full text-left p-4 rounded-xl border transition flex items-center justify-between group ${hasDivorceApp ? 'bg-gray-50 border-gray-200 cursor-not-allowed' : 'border-gray-200 hover:border-red-500 hover:bg-red-50'}`}
+                                className={`w-full p-5 md:p-6 rounded-2xl border-2 transition-all duration-300 flex items-center justify-between group ${hasDivorceApp ? 'bg-gray-50 border-gray-100 cursor-not-allowed opacity-70' : 'bg-white border-primary/20 hover:border-primary hover:bg-primary/5 hover:shadow-md'}`}
                             >
-                                <span className={`font-semibold ${hasDivorceApp ? 'text-gray-400' : 'text-gray-700'}`}>Apply for Divorce</span>
-                                <span className={`${hasDivorceApp ? 'bg-gray-400' : 'bg-red-600 group-hover:px-4'} text-white p-2 rounded-lg transition-all uppercase text-xs font-bold tracking-widest`}>
-                                    {hasDivorceApp ? 'Applied' : 'File'}
+                                <div className="flex items-center gap-4">
+                                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl shadow-sm ${hasDivorceApp ? 'bg-gray-200 text-gray-400' : 'bg-red-500 text-white group-hover:scale-110 transition-transform'}`}>
+                                        <FaBalanceScale />
+                                    </div>
+                                    <span className={`text-lg font-bold md:text-xl ${hasDivorceApp ? 'text-gray-400' : 'text-gray-800 group-hover:text-primary transition-colors'}`}>তালাক আবেদন</span>
+                                </div>
+                                <span className={`${hasDivorceApp ? 'text-gray-400 bg-gray-100' : 'text-red-600 bg-red-50 group-hover:bg-red-500 group-hover:text-white'} px-4 py-2 rounded-full text-sm font-bold tracking-wider transition-all`}>
+                                    {hasDivorceApp ? 'আবেদনকৃত' : 'শুরু করুন'}
                                 </span>
                             </Link>
                         </div>
                     </div>
 
-                    <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-                        <h2 className="text-xl font-bold mb-6">Applications</h2>
-                        <div className="flex flex-col items-center justify-center py-10 text-center">
+                    {/* Applications Status */}
+                    <div className="bg-white p-8 md:p-10 rounded-3xl shadow-xl shadow-primary/5 border border-primary/10 flex flex-col h-full">
+                        <div className="mb-8 border-b border-gray-100 pb-4">
+                            <h2 className="text-2xl font-extrabold text-gray-800 flex items-center gap-3">
+                                <div className="p-2 bg-primary/10 text-primary rounded-lg"><FaHistory size={20} /></div>
+                                বর্তমান আবেদনসমূহ
+                            </h2>
+                            <p className="text-gray-500 text-sm mt-2">আপনার দাখিলকৃত আবেদনের বর্তমান অবস্থা দেখুন</p>
+                        </div>
+                        
+                        <div className="flex flex-col flex-grow">
                             {activeCount > 0 ? (
-                                <div className="space-y-4 w-full">
+                                <div className="space-y-6">
                                     {hasMarriageApp && (
-                                        <div className="flex items-center justify-between p-4 bg-blue-50 rounded-2xl border border-blue-100">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 bg-blue-600 text-white rounded-lg flex items-center justify-center">
+                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between p-5 md:p-6 bg-[#FFF5F8] rounded-2xl border border-primary/20 hover:shadow-md transition-shadow">
+                                            <div className="flex items-center gap-4 mb-4 sm:mb-0">
+                                                <div className="w-14 h-14 bg-primary text-white rounded-xl flex items-center justify-center shadow-sm text-2xl">
                                                     <FaFileSignature />
                                                 </div>
-                                                <div className="text-left">
-                                                    <p className="font-bold text-gray-900">Marriage Application</p>
-                                                    <p className="text-xs text-blue-600 font-medium uppercase tracking-tighter">Status: {userData.marriageApplication.status}</p>
+                                                <div>
+                                                    <p className="text-lg font-bold text-gray-800 mb-1">বিবাহ নিবন্ধন আবেদন</p>
+                                                    <p className="text-sm font-medium px-3 py-1 bg-white text-primary rounded-full inline-block border border-primary/20">অবস্থা: {userData.marriageApplication.status}</p>
                                                 </div>
                                             </div>
                                             <UserApplicationDetails application={userData.marriageApplication} type="marriage" />
                                         </div>
                                     )}
+                                    
                                     {hasDivorceApp && (
-                                        <div className="flex items-center justify-between p-4 bg-red-50 rounded-2xl border border-red-100">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 bg-red-600 text-white rounded-lg flex items-center justify-center">
+                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between p-5 md:p-6 bg-red-50 rounded-2xl border border-red-200 hover:shadow-md transition-shadow">
+                                            <div className="flex items-center gap-4 mb-4 sm:mb-0">
+                                                <div className="w-14 h-14 bg-red-500 text-white rounded-xl flex items-center justify-center shadow-sm text-2xl">
                                                     <FaBalanceScale />
                                                 </div>
-                                                <div className="text-left">
-                                                    <p className="font-bold text-gray-900">Divorce Application</p>
-                                                    <p className="text-xs text-red-600 font-medium uppercase tracking-tighter">Status: {userData.divorceApplication.status}</p>
+                                                <div>
+                                                    <p className="text-lg font-bold text-gray-800 mb-1">তালাক আবেদন</p>
+                                                    <p className="text-sm font-medium px-3 py-1 bg-white text-red-600 rounded-full inline-block border border-red-200">অবস্থা: {userData.divorceApplication.status}</p>
                                                 </div>
                                             </div>
                                             <UserApplicationDetails application={userData.divorceApplication} type="divorce" />
@@ -108,32 +136,17 @@ export default async function UserDashboardPage() {
                                     )}
                                 </div>
                             ) : (
-                                <>
-                                    <div className="text-gray-300 text-5xl mb-4">
+                                <div className="flex flex-col items-center justify-center h-full text-center py-10">
+                                    <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center text-gray-300 text-4xl mb-6 shadow-inner">
                                         <FaHourglassHalf />
                                     </div>
-                                    <p className="text-gray-500 italic">No recent applications found.</p>
-                                    <p className="text-sm text-gray-400 mt-2">Submit an application to track it here.</p>
-                                </>
+                                    <p className="text-xl font-bold text-gray-700 mb-2">কোনো আবেদন পাওয়া যায়নি</p>
+                                    <p className="text-gray-500 max-w-xs mx-auto">আপনার কোনো চলমান আবেদন নেই। নতুন সেবার জন্য বামপাশের মেনু থেকে আবেদন করুন।</p>
+                                </div>
                             )}
                         </div>
                     </div>
-                </div>
-
-                {/* Helper Section */}
-                <div className="bg-indigo-900 text-white rounded-3xl p-10 flex flex-col md:flex-row items-center gap-8">
-                    <div className="bg-indigo-800 p-6 rounded-2xl text-4xl">
-                        <FaUserFriends />
-                    </div>
-                    <div>
-                        <h3 className="text-2xl font-bold mb-2">Need Help?</h3>
-                        <p className="text-indigo-200 text-lg">
-                            If you have questions about the registration process, you can contact our help center or consult with a nearby registered Kaji.
-                        </p>
-                    </div>
-                    <button className="ml-auto bg-white text-indigo-900 px-8 py-3 rounded-full font-bold hover:bg-gray-100 transition whitespace-nowrap">
-                        Contact Support
-                    </button>
+                    
                 </div>
             </main>
         </div>

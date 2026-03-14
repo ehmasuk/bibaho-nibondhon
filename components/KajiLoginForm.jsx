@@ -26,7 +26,7 @@ export default function KajiLoginForm() {
         <Form onFinish={handleSubmit} layout="vertical">
             <div className="flex flex-col text-black">
                 <div>
-                    <label htmlFor="nid" className="mb-2 text-lg inline-block">
+                    <label htmlFor="nid" className="mb-2 text-base font-medium flex items-center gap-2">
                         এনআইডি নম্বর
                     </label>
                     <FormItem 
@@ -37,12 +37,12 @@ export default function KajiLoginForm() {
                             type="text" 
                             id="nid" 
                             placeholder="এনআইডি নম্বর"
-                            className="w-full outline-none p-4 border border-gray-200 rounded-xl focus:border-blue-500 transition" 
+                            className="w-full outline-none p-4 border border-gray-200 rounded-xl focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-300" 
                         />
                     </FormItem>
                 </div>
                 <div>
-                    <label htmlFor="password" className="mb-2 text-lg inline-block">
+                    <label htmlFor="password" className="mb-2 text-base font-medium inline-block">
                         পাসওয়ার্ড
                     </label>
                     <FormItem 
@@ -53,14 +53,14 @@ export default function KajiLoginForm() {
                             type="password" 
                             id="password" 
                             placeholder="পাসওয়ার্ড"
-                            className="w-full outline-none p-4 border border-gray-200 rounded-xl focus:border-blue-500 transition" 
+                            className="w-full outline-none p-4 border border-gray-200 rounded-xl focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-300" 
                         />
                     </FormItem>
                 </div>
                 <button 
                     disabled={loading} 
                     type="submit" 
-                    className="w-full flex items-center gap-2 justify-center bg-blue-600 text-white p-4 rounded-xl hover:bg-blue-700 transition uppercase font-bold shadow-lg"
+                    className="w-full flex items-center gap-2 justify-center bg-primary text-white p-4 mt-2 rounded-xl hover:bg-[#832043] transition-all duration-300 uppercase tracking-wider font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5"
                 >
                     কাজী হিসেবে লগইন করুন
                     {loading && <AiOutlineLoading3Quarters className="animate-spin" color="white" fontSize={16} />}
