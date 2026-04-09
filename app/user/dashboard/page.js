@@ -28,10 +28,10 @@ export default async function UserDashboardPage() {
             <div className="bg-primary pt-10 pb-24 px-4 sm:px-6 lg:px-8 shadow-md">
                 <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="text-center md:text-left text-white">
-                        <h1 className="text-3xl md:text-4xl font-extrabold mb-2 drop-shadow-sm">ব্যবহারকারী ড্যাশবোর্ড</h1>
-                        <p className="text-white/80 text-lg font-medium flex items-center justify-center md:justify-start gap-2">
-                            <span className="bg-white/20 px-3 py-1 rounded-full text-sm">এনআইডি: {session?.user?.nid}</span>
-                        </p>
+                        <h1 className="text-2xl md:text-4xl font-extrabold mb-3 drop-shadow-sm leading-tight text-white">ব্যবহারকারী ড্যাশবোর্ড</h1>
+                        <div className="flex items-center justify-center md:justify-start">
+                            <span className="bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full text-sm font-medium border border-white/20">এনআইডি: {session?.user?.nid}</span>
+                        </div>
                     </div>
                     <div className="flex items-center gap-4">
                         <Link href="/" className="flex items-center justify-center w-12 h-12 bg-white/10 hover:bg-white/20 text-white rounded-xl backdrop-blur-sm transition-all border border-white/20 hover:scale-105 shadow-sm">
@@ -93,9 +93,9 @@ export default async function UserDashboardPage() {
                     </div>
 
                     {/* Applications Status */}
-                    <div className="bg-white p-8 md:p-10 rounded-3xl shadow-xl shadow-primary/5 border border-primary/10 flex flex-col h-full">
-                        <div className="mb-8 border-b border-gray-100 pb-4">
-                            <h2 className="text-2xl font-extrabold text-gray-800 flex items-center gap-3">
+                    <div className="bg-white p-6 md:p-10 rounded-3xl shadow-xl shadow-primary/5 border border-primary/10 flex flex-col h-full">
+                        <div className="mb-6 border-b border-gray-100 pb-4">
+                            <h2 className="text-xl md:text-2xl font-extrabold text-gray-800 flex items-center gap-3">
                                 <div className="p-2 bg-primary/10 text-primary rounded-lg"><FaHistory size={20} /></div>
                                 বর্তমান আবেদনসমূহ
                             </h2>
@@ -104,44 +104,48 @@ export default async function UserDashboardPage() {
                         
                         <div className="flex flex-col flex-grow">
                             {activeCount > 0 ? (
-                                <div className="space-y-6">
+                                <div className="space-y-4 md:space-y-6">
                                     {hasMarriageApp && (
-                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between p-5 md:p-6 bg-[#FFF5F8] rounded-2xl border border-primary/20 hover:shadow-md transition-shadow">
-                                            <div className="flex items-center gap-4 mb-4 sm:mb-0">
-                                                <div className="w-14 h-14 bg-primary text-white rounded-xl flex items-center justify-center shadow-sm text-2xl">
+                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 md:p-6 bg-[#FFF5F8] rounded-2xl border border-primary/20 hover:shadow-md transition-shadow gap-4">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-12 h-12 md:w-14 md:h-14 bg-primary text-white rounded-xl flex items-center justify-center shadow-sm text-xl md:text-2xl flex-shrink-0">
                                                     <FaFileSignature />
                                                 </div>
                                                 <div>
-                                                    <p className="text-lg font-bold text-gray-800 mb-1">বিবাহ নিবন্ধন আবেদন</p>
-                                                    <p className="text-sm font-medium px-3 py-1 bg-white text-primary rounded-full inline-block border border-primary/20">অবস্থা: {userData.marriageApplication.status}</p>
+                                                    <p className="text-base md:text-lg font-bold text-gray-800 mb-0.5">বিবাহ নিবন্ধন আবেদন</p>
+                                                    <p className="text-xs font-medium px-2 py-0.5 bg-white text-primary rounded-full inline-block border border-primary/20">অবস্থা: {userData.marriageApplication.status}</p>
                                                 </div>
                                             </div>
-                                            <UserApplicationDetails application={userData.marriageApplication} type="marriage" />
+                                            <div className="w-full sm:w-auto">
+                                                <UserApplicationDetails application={userData.marriageApplication} type="marriage" />
+                                            </div>
                                         </div>
                                     )}
                                     
                                     {hasDivorceApp && (
-                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between p-5 md:p-6 bg-red-50 rounded-2xl border border-red-200 hover:shadow-md transition-shadow">
-                                            <div className="flex items-center gap-4 mb-4 sm:mb-0">
-                                                <div className="w-14 h-14 bg-red-500 text-white rounded-xl flex items-center justify-center shadow-sm text-2xl">
+                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 md:p-6 bg-red-50 rounded-2xl border border-red-200 hover:shadow-md transition-shadow gap-4">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-12 h-12 md:w-14 md:h-14 bg-red-500 text-white rounded-xl flex items-center justify-center shadow-sm text-xl md:text-2xl flex-shrink-0">
                                                     <FaBalanceScale />
                                                 </div>
                                                 <div>
-                                                    <p className="text-lg font-bold text-gray-800 mb-1">তালাক আবেদন</p>
-                                                    <p className="text-sm font-medium px-3 py-1 bg-white text-red-600 rounded-full inline-block border border-red-200">অবস্থা: {userData.divorceApplication.status}</p>
+                                                    <p className="text-base md:text-lg font-bold text-gray-800 mb-0.5">তালাক আবেদন</p>
+                                                    <p className="text-xs font-medium px-2 py-0.5 bg-white text-red-600 rounded-full inline-block border border-red-200">অবস্থা: {userData.divorceApplication.status}</p>
                                                 </div>
                                             </div>
-                                            <UserApplicationDetails application={userData.divorceApplication} type="divorce" />
+                                            <div className="w-full sm:w-auto">
+                                                <UserApplicationDetails application={userData.divorceApplication} type="divorce" />
+                                            </div>
                                         </div>
                                     )}
                                 </div>
                             ) : (
-                                <div className="flex flex-col items-center justify-center h-full text-center py-10">
-                                    <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center text-gray-300 text-4xl mb-6 shadow-inner">
+                                <div className="flex flex-col items-center justify-center h-full text-center py-10 px-4">
+                                    <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center text-gray-300 text-3xl mb-6 shadow-inner">
                                         <FaHourglassHalf />
                                     </div>
-                                    <p className="text-xl font-bold text-gray-700 mb-2">কোনো আবেদন পাওয়া যায়নি</p>
-                                    <p className="text-gray-500 max-w-xs mx-auto">আপনার কোনো চলমান আবেদন নেই। নতুন সেবার জন্য বামপাশের মেনু থেকে আবেদন করুন।</p>
+                                    <p className="text-lg font-bold text-gray-700 mb-2">কোনো আবেদন পাওয়া যায়নি</p>
+                                    <p className="text-gray-500 text-sm max-w-[250px] mx-auto">আপনার কোনো চলমান আবেদন নেই। নতুন সেবার জন্য বামপাশের মেনু থেকে আবেদন করুন।</p>
                                 </div>
                             )}
                         </div>

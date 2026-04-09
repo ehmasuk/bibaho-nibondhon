@@ -48,7 +48,7 @@ export default function DashboardSidebar({ status }) {
       {/* Mobile Toggle */}
       <button
         onClick={toggleSidebar}
-        className="lg:hidden fixed bottom-6 right-6 z-50 w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center text-xl transition-transform active:scale-90 border-4 border-white"
+        className="lg:hidden fixed top-4 right-4 z-[100] w-12 h-12 bg-primary text-white rounded-xl shadow-xl flex items-center justify-center text-xl transition-all active:scale-95 border-2 border-white/20 active:bg-primary/90"
       >
         {isOpen ? <FaTimes /> : <FaBars />}
       </button>

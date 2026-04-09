@@ -1,161 +1,123 @@
-# EazyBuy
+# Bibaho Nibondhon - Digital Marriage & Divorce Registration System
 
-EazyBuy is a collaborative e-commerce platform developed to provide a seamless shopping experience for electronic products. This repository contains the full-stack codebase, encompassing both the client-side and server-side components, built with modern web technologies to ensure responsiveness, performance, and scalability.
+**Bibaho Nibondhon** is a comprehensive, professional digital platform designed to streamline and modernize the marriage and divorce registration process. Built with cutting-edge technologies, it provides a secure and efficient way for citizens, marriage registrars (Kajis), and administrators to manage legal documentation and registrations.
 
-## Features
+## 🚀 Key Features
 
-- **Product Catalog**: Browse and explore a wide range of electronic products.
-- **Product Details**: View detailed information and customer reviews for each product.
-- **User Authentication**: Secure registration and login functionalities.
-- **Shopping Cart**: Add products to the cart, update quantities, and proceed to checkout.
-- **Order Management**: Track and manage your orders efficiently.
-- **Payment Integration**: Secure payment processing for a smooth transaction experience.
-- **Responsive Design**: Optimized for various devices to ensure a seamless shopping experience.
+### For Citizens (User)
 
-## Technologies Used
+- **NID-Based Authentication**: Secure login and registration using National Identity (NID) numbers.
+- **Marriage Application**: Intuitive form to submit marriage registration details, including groom/bride information, witnesses, and denmohor.
+- **Divorce Application**: Legal submission process for divorce registration with reason and witness documentation.
+- **Status Tracking**: Real-time updates on the progress of applications (Pending, Accepted, Rejected).
+- **Payment Integration**: Secure online payment of registration fees via Stripe.
 
-- **Frontend**: [Next.js](https://nextjs.org/) with [React](https://reactjs.org/) and [TypeScript](https://www.typescriptlang.org/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **State Management**: [Redux](https://redux.js.org/)
-- **API Requests**: [React Query](https://react-query.tanstack.com/)
-- **Authentication**: [NextAuth.js](https://next-auth.js.org/)
-- **Backend**: [Node.js](https://nodejs.org/) with [Express.js](https://expressjs.com/)
-- **Database**: [MongoDB](https://www.mongodb.com/) with [Mongoose](https://mongoosejs.com/)
-- **ORM**: [Prisma](https://www.prisma.io/) for database interactions
+### For Marriage Registrars (Kaji)
 
-## Getting Started
+- **Professional Profiles**: Dedicated dashboard to manage jurisdiction, license details, and organization info.
+- **Application Management**: Review, accept, or reject marriage and divorce applications within their assigned area.
+- **Digital Signatures**: Capability to handle and verify documentation digitally.
+
+### For Administrators
+
+- **Kaji Verification**: Review and approve new Kaji registrations to ensure only authorized personnel use the platform.
+- **System Oversight**: Holistic view of all registrations and system activity.
+
+## 🛠️ Technology Stack
+
+- **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
+- **Frontend Library**: [React 18](https://react.dev/)
+- **UI Components**: [Ant Design (antd)](https://ant.design/) & [Tailwind CSS](https://tailwindcss.com/)
+- **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **State Management**: [Redux Toolkit](https://redux-toolkit.js.org/)
+- **Authentication**: [NextAuth.js v5](https://authjs.dev/)
+- **Database ORM**: [Prisma](https://www.prisma.io/)
+- **Database**: [MongoDB](https://www.mongodb.com/)
+- **Payments**: [Stripe](https://stripe.com/)
+- **Media Storage**: [Cloudinary](https://cloudinary.com/)
+- **Data Fetching**: [SWR](https://swr.vercel.app/) & [Axios](https://axios-http.com/)
+
+## 📁 Project Structure
+
+```text
+├── actions/         # Server actions for Next.js
+├── app/             # Main application pages and API routes (App Router)
+├── components/      # Reusable UI components
+├── helpers/         # Utility functions
+├── hooks/           # Custom React hooks
+├── prisma/          # Database schema and migrations
+├── providers/       # Context and Redux providers
+├── public/          # Static assets
+├── redux/           # Redux store and slices
+└── middleware.js    # Authentication and routing middleware
+```
+
+## ⚙️ Getting Started
 
 ### Prerequisites
 
-Ensure you have the following installed:
-
-- [Node.js](https://nodejs.org/) (version 14 or higher)
-- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
-- [MongoDB](https://www.mongodb.com/) (for local development)
+- Node.js (v18 or higher)
+- MongoDB instance (Atlas or local)
+- Cloudinary account (for media uploads)
+- Stripe account (for payments)
 
 ### Installation
 
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/ehmasuk/eazybuy.git
+   git clone https://github.com/ehmasuk/bibaho-nibondhon.git
+   cd bibaho-nibondhon
    ```
 
-2. **Navigate to the project directory**:
-
-   ```bash
-   cd eazybuy
-   ```
-
-3. **Install dependencies for both client and server**:
-
-   Using npm:
+2. **Install dependencies**:
 
    ```bash
    npm install
    ```
 
-   Or using yarn:
+3. **Environment Setup**:
+   Create a `.env` file in the root directory and add the following variables:
 
-   ```bash
-   yarn install
+   ```env
+   # Database
+   NEXT_PUBLIC_MONGOOSE_URL=your_mongodb_connection_string
+
+   # Authentication
+   AUTH_SECRET=your_nextauth_secret
+
+   # Cloudinary
+   NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
+   NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=your_upload_preset
+
+   # Stripe
+   STRIPE_SECRET_KEY=your_stripe_secret_key
+   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_pub_key
    ```
 
-4. **Set up environment variables**:
-
-   - Rename the `.env.example` file to `.env.local`.
-   - Add necessary environment variables, such as database connection strings and API keys.
-
-5. **Run database migrations**:
+4. **Initialize Prisma**:
 
    ```bash
-   npx prisma migrate dev
+   npx prisma generate
    ```
 
-### Development
+5. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
 
-To start the development server:
+## 📜 Available Scripts
 
-Using npm:
+- `npm run dev`: Starts the development server with Prisma client generation.
+- `npm run build`: Generates an optimized production build.
+- `npm run start`: Starts the production server.
+- `npm run lint`: Runs ESLint for code quality checks.
 
-```bash
-npm run dev
-```
+## 🛡️ License
 
-Or using yarn:
+This project is for demonstration purposes and follows standard legal software licensing.
 
-```bash
-yarn dev
-```
+## 🤝 Acknowledgements
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
-
-### Building for Production
-
-To build the application for production:
-
-Using npm:
-
-```bash
-npm run build
-```
-
-Or using yarn:
-
-```bash
-yarn build
-```
-
-This will generate an optimized build in the `.next` directory.
-
-### Starting the Production Server
-
-After building the application, you can start the production server:
-
-Using npm:
-
-```bash
-npm start
-```
-
-Or using yarn:
-
-```bash
-yarn start
-```
-
-## Project Structure
-
-- `client/`: Contains the client-side application components and pages.
-- `server/`: Contains the server-side application code and API endpoints.
-- `components/`: Reusable UI components.
-- `helpers/`: Utility functions and helpers.
-- `hooks/`: Custom React hooks.
-- `prisma/`: Prisma schema and migrations.
-- `public/`: Static assets like images and fonts.
-- `redux/`: Redux store and slices.
-
-## Contributing
-
-We welcome contributions from the community! To contribute:
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/YourFeature`).
-3. Commit your changes (`git commit -m 'Add some feature'`).
-4. Push to the branch (`git push origin feature/YourFeature`).
-5. Open a pull request.
-
-Please ensure your code adheres to our coding standards and includes relevant tests.
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Acknowledgements
-
-- [Next.js](https://nextjs.org/): React framework for server-side rendering and static site generation.
-- [Tailwind CSS](https://tailwindcss.com/): Utility-first CSS framework for styling.
-- [Prisma](https://www.prisma.io/): Next-generation ORM for Node.js and TypeScript.
-- [Redux](https://redux.js.org/): Predictable state container for JavaScript apps.
-- [React Query](https://react-query.tanstack.com/): Data-fetching library for React applications.
-
+- Thanks to the [Bangladesh Government](https://bangladesh.gov.bd) for inspiration on digital service transformation.
+- Built with ❤️ using the Next.js ecosystem.

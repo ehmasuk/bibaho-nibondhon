@@ -120,6 +120,7 @@ export default function AdminKajiTable({ kajis }) {
                 rowKey="id" 
                 pagination={{ pageSize: 10 }}
                 className="overflow-x-auto"
+                scroll={{ x: 'max-content' }}
             />
 
             <Modal
